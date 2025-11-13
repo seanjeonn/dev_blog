@@ -1,0 +1,288 @@
+---
+title: "React Server Components 완벽 가이드"
+description: "RSC의 개념부터 실제 활용까지, 모든 것을 알아봅니다"
+date: 2025-01-15
+published: true
+tags: ["React", "Server Components", "Next.js"]
+category: "React"
+toc: true
+---
+
+## React Server Components란?
+
+React Server Components (RSC)는 서버에서 실행되는 새로운 유형의 React 컴포넌트입니다.
+
+### 기존 방식의 문제점
+
+전통적인 React 앱에서는 모든 컴포넌트가 클라이언트에서 실행됩니다:
+
+```jsx
+// ❌ 모든 코드가 번들에 포함됨
+import { marked } from 'marked';
+import { format } from 'date-fns';
+import { ko } from 'date-fns/locale';
+
+function BlogPost({ post }) {
+  const html = marked(post.content);
+  const date = format(new Date(post.date), 'PPP', { locale: ko });
+
+  return (
+    <article>
+      <time>{date}</time>
+      <div dangerouslySetInnerHTML={{ __html: html }} />
+    </article>
+  );
+}
+```
+
+**문제점:**
+- `marked` (70KB)와 `date-fns` (30KB)가 번들에 포함
+- 초기 로딩 시간 증가
+- 클라이언트에서 불필요한 연산
+
+### Server Components의 해결책
+
+```tsx
+// ✅ 서버에서만 실행, 번들에 포함되지 않음
+import { marked } from 'marked';
+import { format } from 'date-fns';
+import { ko } from 'date-fns/locale';
+
+// 기본적으로 Server Component
+async function BlogPost({ slug }: { slug: string }) {
+  // 서버에서 직접 데이터베이스 쿼리
+  const post = await db.posts.findUnique({ where: { slug } });
+
+  const html = marked(post.content);
+  const date = format(new Date(post.date), 'PPP', { locale: ko });
+
+  return (
+    <article>
+      <time>{date}</time>
+      <div dangerouslySetInnerHTML={{ __html: html }} />
+    </article>
+  );
+}
+```
+
+**장점:**
+- 번들 크기 0KB 추가
+- 서버에서 HTML 생성 후 전송
+- 데이터베이스 직접 접근 가능
+
+## Server vs Client Components
+
+### Server Components
+
+```tsx
+// app/posts/page.tsx
+import { posts } from '@/.velite';
+
+// 기본적으로 Server Component
+export default function PostsPage() {
+  const publishedPosts = posts.filter(p => p.published);
+
+  return (
+    <div>
+      {publishedPosts.map(post => (
+        <PostCard key={post.slug} post={post} />
+      ))}
+    </div>
+  );
+}
+```
+
+**특징:**
+- `async/await` 사용 가능
+- 서버 리소스 직접 접근
+- 번들에 포함되지 않음
+- 상태/이벤트 핸들러 사용 불가
+
+### Client Components
+
+```tsx
+'use client';
+
+import { useState } from 'react';
+
+export function LikeButton({ postId }: { postId: string }) {
+  const [likes, setLikes] = useState(0);
+  const [isLiked, setIsLiked] = useState(false);
+
+  const handleLike = async () => {
+    const response = await fetch(`/api/posts/${postId}/like`, {
+      method: 'POST',
+    });
+    const data = await response.json();
+    setLikes(data.likes);
+    setIsLiked(true);
+  };
+
+  return (
+    <button onClick={handleLike} disabled={isLiked}>
+      ❤️ {likes}
+    </button>
+  );
+}
+```
+
+**특징:**
+- `'use client'` 지시어 필요
+- 상태, 이펙트, 이벤트 핸들러 사용 가능
+- 브라우저 API 접근 가능
+- 번들에 포함됨
+
+## 조합 패턴
+
+### Pattern 1: Server Component에서 Client Component 사용
+
+```tsx
+// app/posts/[slug]/page.tsx
+import { posts } from '@/.velite';
+import { LikeButton } from '@/components/like-button';
+import { ShareButton } from '@/components/share-button';
+
+export default async function PostPage({ params }) {
+  const { slug } = await params;
+  const post = posts.find(p => p.slug === slug);
+
+  return (
+    <article>
+      <h1>{post.title}</h1>
+
+      {/* Server Component에서 렌더링된 콘텐츠 */}
+      <div dangerouslySetInnerHTML={{ __html: post.body }} />
+
+      {/* Client Components for 인터랙션 */}
+      <div className="flex gap-2">
+        <LikeButton postId={post.slug} />
+        <ShareButton url={post.permalink} />
+      </div>
+    </article>
+  );
+}
+```
+
+### Pattern 2: Client Component에 Server Component 전달
+
+```tsx
+// components/tabs.tsx
+'use client';
+
+import { useState } from 'react';
+
+export function Tabs({ children }: { children: React.ReactNode }) {
+  const [activeTab, setActiveTab] = useState(0);
+
+  return (
+    <div>
+      {/* 탭 UI */}
+      <div>{children}</div>
+    </div>
+  );
+}
+
+// app/page.tsx
+import { Tabs } from '@/components/tabs';
+import { RecentPosts } from '@/components/recent-posts'; // Server Component
+
+export default function Home() {
+  return (
+    <Tabs>
+      <RecentPosts />
+    </Tabs>
+  );
+}
+```
+
+## 데이터 페칭 전략
+
+### Parallel 페칭
+
+```tsx
+async function PostPage({ params }) {
+  const { slug } = await params;
+
+  // 병렬로 실행
+  const [post, author, comments] = await Promise.all([
+    getPost(slug),
+    getAuthor(post.authorId),
+    getComments(slug),
+  ]);
+
+  return (
+    <article>
+      <PostHeader post={post} author={author} />
+      <PostBody content={post.body} />
+      <Comments comments={comments} />
+    </article>
+  );
+}
+```
+
+### Sequential 페칭
+
+```tsx
+async function PostPage({ params }) {
+  const { slug } = await params;
+
+  // 순차적 실행 (post 데이터 필요)
+  const post = await getPost(slug);
+  const author = await getAuthor(post.authorId); // post.authorId 필요
+
+  return <PostHeader post={post} author={author} />;
+}
+```
+
+## 실전 예제
+
+```tsx
+// app/dashboard/page.tsx
+import { Suspense } from 'react';
+import { auth } from '@/lib/auth';
+import { redirect } from 'next/navigation';
+
+export default async function Dashboard() {
+  const session = await auth();
+
+  if (!session) {
+    redirect('/signin');
+  }
+
+  return (
+    <div>
+      <h1>대시보드</h1>
+
+      <Suspense fallback={<Skeleton />}>
+        <RecentPosts userId={session.user.id} />
+      </Suspense>
+
+      <Suspense fallback={<Skeleton />}>
+        <Analytics userId={session.user.id} />
+      </Suspense>
+    </div>
+  );
+}
+
+// Server Component
+async function RecentPosts({ userId }: { userId: string }) {
+  const posts = await db.posts.findMany({
+    where: { userId },
+    take: 5,
+    orderBy: { createdAt: 'desc' },
+  });
+
+  return (
+    <div>
+      {posts.map(post => (
+        <PostCard key={post.id} post={post} />
+      ))}
+    </div>
+  );
+}
+```
+
+## 결론
+
+React Server Components는 성능과 개발자 경험을 모두 개선하는 혁신적인 패러다임입니다.
+Next.js와 함께 사용하면 최고의 결과를 얻을 수 있습니다!

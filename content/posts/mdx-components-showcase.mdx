@@ -1,0 +1,702 @@
+---
+title: "MDX 커스텀 컴포넌트 완벽 가이드"
+description: "Callout, Tabs, ImageGallery 등 모든 MDX 컴포넌트를 활용하는 방법을 배워보세요"
+date: 2025-01-18
+published: true
+tags: ["MDX", "Components", "Tutorial", "Documentation"]
+category: "Tutorial"
+toc: true
+---
+
+## 소개
+
+이 포스트는 우리 블로그 시스템에서 사용 가능한 **모든 MDX 커스텀 컴포넌트**를 소개합니다. 각 컴포넌트의 사용법과 실제 예시를 통해 더 풍부하고 인터랙티브한 콘텐츠를 작성하는 방법을 배워보세요!
+
+<Callout type="info" title="MDX란?">
+  MDX는 Markdown 안에서 JSX 컴포넌트를 사용할 수 있게 해주는 포맷입니다. 기술
+  문서, 블로그 포스트, 대시보드 등에 완벽합니다!
+</Callout>
+
+## 1. Callout 컴포넌트
+
+Callout 컴포넌트는 중요한 정보를 강조할 때 사용합니다. 5가지 타입이 있습니다:
+
+### Info Callout
+
+<Callout type="info" title="정보">
+  일반적인 정보나 팁을 제공할 때 사용합니다. 파란색 테마로 사용자의 주의를
+  끕니다.
+</Callout>
+
+### Warning Callout
+
+<Callout type="warning" title="주의사항">
+  사용자가 주의해야 할 사항을 알릴 때 사용합니다. 노란색 테마로 경고를
+  표시합니다.
+</Callout>
+
+### Success Callout
+
+<Callout type="success" title="성공!">
+  성공적인 작업이나 긍정적인 결과를 강조할 때 사용합니다. 초록색 테마로 긍정적인
+  메시지를 전달합니다.
+</Callout>
+
+### Error Callout
+
+<Callout type="error" title="에러">
+  오류 상황이나 피해야 할 사항을 알릴 때 사용합니다. 빨간색 테마로 중요한
+  주의사항을 표시합니다.
+</Callout>
+
+### Tip Callout
+
+<Callout type="tip" title="프로 팁">
+  유용한 팁이나 모범 사례를 공유할 때 사용합니다. 보라색 테마로 특별한
+  인사이트를 제공합니다.
+</Callout>
+
+## 2. 코드 블록과 구문 강조
+
+우리 블로그는 `rehype-pretty-code`를 사용하여 아름다운 구문 강조를 제공합니다.
+
+### TypeScript 예시
+
+```tsx
+// 타입 안전한 React 컴포넌트
+interface ButtonProps {
+  variant: "primary" | "secondary" | "ghost";
+  size?: "sm" | "md" | "lg";
+  disabled?: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}
+
+export const Button: React.FC<ButtonProps> = ({
+  variant,
+  size = "md",
+  disabled = false,
+  onClick,
+  children,
+}) => {
+  const baseClasses = "rounded-lg font-medium transition-all";
+  const variantClasses = {
+    primary: "bg-primary text-white hover:bg-primary/90",
+    secondary: "bg-secondary text-secondary-foreground",
+    ghost: "hover:bg-accent hover:text-accent-foreground",
+  };
+
+  return (
+    <button
+      className={cn(baseClasses, variantClasses[variant])}
+      disabled={disabled}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+};
+```
+
+### Python 예시
+
+```python
+# 데이터 분석을 위한 간단한 클래스
+import pandas as pd
+from typing import List, Dict, Any
+
+class DataAnalyzer:
+    """데이터 분석 헬퍼 클래스"""
+
+    def __init__(self, data: pd.DataFrame):
+        self.data = data
+        self.results: Dict[str, Any] = {}
+
+    def calculate_statistics(self) -> Dict[str, float]:
+        """기본 통계 계산"""
+        return {
+            'mean': self.data.mean(),
+            'median': self.data.median(),
+            'std': self.data.std(),
+            'count': len(self.data)
+        }
+
+    def filter_outliers(self, threshold: float = 3.0) -> pd.DataFrame:
+        """이상치 제거 (Z-score 기반)"""
+        z_scores = np.abs(stats.zscore(self.data))
+        return self.data[(z_scores < threshold).all(axis=1)]
+
+# 사용 예시
+analyzer = DataAnalyzer(df)
+stats = analyzer.calculate_statistics()
+print(f"평균: {stats['mean']:.2f}")
+```
+
+### JavaScript 예시
+
+```javascript
+// 비동기 데이터 페칭 유틸리티
+const fetchWithRetry = async (url, options = {}, retries = 3) => {
+  const { timeout = 5000, ...fetchOptions } = options;
+
+  for (let i = 0; i < retries; i++) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+      const response = await fetch(url, {
+        ...fetchOptions,
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      if (i === retries - 1) throw error;
+
+      // 지수 백오프
+      await new Promise((resolve) =>
+        setTimeout(resolve, Math.pow(2, i) * 1000)
+      );
+    }
+  }
+};
+```
+
+### SQL 예시
+
+```sql
+-- 복잡한 분석 쿼리 예시
+WITH user_stats AS (
+  SELECT
+    u.id,
+    u.name,
+    COUNT(DISTINCT o.id) as order_count,
+    SUM(o.total_amount) as total_spent,
+    AVG(o.total_amount) as avg_order_value,
+    MAX(o.created_at) as last_order_date
+  FROM users u
+  LEFT JOIN orders o ON u.id = o.user_id
+  WHERE o.status = 'completed'
+    AND o.created_at >= NOW() - INTERVAL '1 year'
+  GROUP BY u.id, u.name
+)
+SELECT
+  name,
+  order_count,
+  total_spent,
+  avg_order_value,
+  CASE
+    WHEN order_count >= 10 THEN 'VIP'
+    WHEN order_count >= 5 THEN 'Premium'
+    ELSE 'Standard'
+  END as customer_tier
+FROM user_stats
+ORDER BY total_spent DESC
+LIMIT 100;
+```
+
+<Callout type="tip" title="코드 하이라이팅 팁">
+  GitHub Dark 테마를 사용하여 일관성 있고 가독성 높은 코드 블록을 제공합니다!
+</Callout>
+
+## 3. Tabs 컴포넌트
+
+Tabs를 사용하면 여러 옵션이나 코드 예시를 효율적으로 표시할 수 있습니다.
+
+<Tabs defaultValue="typescript">
+  <TabsList>
+    <TabsTrigger value="typescript">TypeScript</TabsTrigger>
+    <TabsTrigger value="javascript">JavaScript</TabsTrigger>
+    <TabsTrigger value="python">Python</TabsTrigger>
+  </TabsList>
+
+  <TabsContent value="typescript">
+    ### TypeScript 타입 안전성
+
+    ```typescript
+    interface User {
+      id: string;
+      name: string;
+      email: string;
+      role: "admin" | "user";
+    }
+
+    const createUser = (data: Omit<User, "id">): User => {
+      return {
+        id: crypto.randomUUID(),
+        ...data,
+      };
+    };
+
+    const user = createUser({
+      name: "John Doe",
+      email: "john@example.com",
+      role: "user",
+    });
+    ```
+
+    TypeScript는 컴파일 타임에 타입 체크를 수행하여 런타임 에러를 방지합니다.
+
+  </TabsContent>
+
+  <TabsContent value="javascript">
+    ### JavaScript 런타임 검증
+
+    ```javascript
+    const createUser = (data) => {
+      if (!data.name || !data.email) {
+        throw new Error("Name and email are required");
+      }
+
+      return {
+        id: crypto.randomUUID(),
+        name: data.name,
+        email: data.email,
+        role: data.role || "user",
+      };
+    };
+
+    const user = createUser({
+      name: "John Doe",
+      email: "john@example.com",
+      role: "user",
+    });
+    ```
+
+    JavaScript는 런타임에 유효성을 검증합니다.
+
+  </TabsContent>
+
+  <TabsContent value="python">
+    ### Python 데이터클래스
+
+    ```python
+    from dataclasses import dataclass
+    from typing import Literal
+    import uuid
+
+    @dataclass
+    class User:
+        id: str
+        name: str
+        email: str
+        role: Literal["admin", "user"]
+
+    def create_user(
+        name: str,
+        email: str,
+        role: Literal["admin", "user"] = "user"
+    ) -> User:
+        return User(
+            id=str(uuid.uuid4()),
+            name=name,
+            email=email,
+            role=role
+        )
+
+    user = create_user(
+        name="John Doe",
+        email="john@example.com",
+        role="user"
+    )
+    ```
+
+    Python의 데이터클래스는 타입 힌트를 제공합니다.
+
+  </TabsContent>
+</Tabs>
+
+<Callout type="success">
+  Tabs 컴포넌트는 다양한 정보를 깔끔하게 정리하는 데 완벽합니다!
+</Callout>
+
+## 4. 리스트와 텍스트 포맷팅
+
+### 순서 없는 리스트
+
+다양한 레벨의 리스트를 사용할 수 있습니다:
+
+- **프론트엔드 기술**
+
+  - React 19
+    - Server Components
+    - Concurrent Features
+    - Suspense
+  - Next.js 15
+    - App Router
+    - Server Actions
+    - Partial Prerendering
+  - TypeScript
+    - Type Safety
+    - Better DX
+    - Refactoring Support
+
+- **백엔드 기술**
+  - Node.js
+  - Prisma ORM
+  - PostgreSQL
+  - NextAuth
+
+### 순서 있는 리스트
+
+프로젝트 시작하기:
+
+1. **요구사항 분석**
+
+   1. 기능 정의
+   2. 기술 스택 선정
+   3. 아키텍처 설계
+
+2. **개발 환경 설정**
+
+   1. Git 저장소 생성
+   2. 프로젝트 초기화
+   3. 의존성 설치
+   4. 환경 변수 설정
+
+3. **핵심 기능 개발**
+
+   1. 데이터베이스 스키마 설계
+   2. API 엔드포인트 구현
+   3. UI 컴포넌트 개발
+   4. 통합 테스트
+
+4. **배포 및 모니터링**
+   1. CI/CD 파이프라인 설정
+   2. 프로덕션 배포
+   3. 모니터링 설정
+   4. 성능 최적화
+
+### 작업 체크리스트
+
+- [x] 프로젝트 설정 완료
+- [x] 데이터베이스 마이그레이션
+- [x] 인증 시스템 구현
+- [ ] 결제 시스템 통합
+- [ ] 이메일 알림 설정
+- [ ] 관리자 대시보드 개발
+
+## 5. 테이블
+
+### 기술 스택 비교
+
+| 프레임워크 | 언어       | 렌더링 방식 | 학습 곡선 | 커뮤니티   |
+| ---------- | ---------- | ----------- | --------- | ---------- |
+| Next.js    | TypeScript | SSR/SSG/ISR | 중간      | ⭐⭐⭐⭐⭐ |
+| Remix      | TypeScript | SSR         | 중간      | ⭐⭐⭐⭐   |
+| Astro      | TypeScript | SSG         | 쉬움      | ⭐⭐⭐⭐   |
+| SvelteKit  | Svelte     | SSR/SSG     | 쉬움      | ⭐⭐⭐     |
+| Nuxt.js    | Vue.js     | SSR/SSG     | 중간      | ⭐⭐⭐⭐   |
+
+### 패키지 버전 정보
+
+| 패키지      | 버전    | 용도          | 필수 여부 |
+| ----------- | ------- | ------------- | --------- |
+| next        | 15.5.5  | 프레임워크    | ✅ 필수   |
+| react       | 19.1.0  | UI 라이브러리 | ✅ 필수   |
+| velite      | 0.3.0   | 콘텐츠 관리   | ✅ 필수   |
+| prisma      | 6.17.1  | ORM           | ✅ 필수   |
+| next-auth   | 4.24.11 | 인증          | ⚠️ 선택   |
+| tailwindcss | 4.x     | 스타일링      | ⚠️ 선택   |
+
+## 6. 인용구와 강조
+
+### 단순 인용구
+
+> "좋은 코드는 그 자체로 최고의 문서입니다."
+> — Steve McConnell
+
+### 중첩 인용구
+
+> "먼저 작동하게 만들고, 그 다음 올바르게 만들고, 마지막으로 빠르게 만들어라."
+>
+> > "하지만 처음 두 단계를 건너뛰지 마라."
+> >
+> > — Kent Beck
+
+### 코드가 포함된 인용구
+
+> 💡 **프로 팁**: `useState`보다 `useReducer`를 사용하면 복잡한 상태 로직을 더 쉽게 관리할 수 있습니다.
+>
+> ```typescript
+> const [state, dispatch] = useReducer(reducer, initialState);
+> ```
+
+## 7. 이미지
+
+기본 마크다운 문법으로 이미지를 추가할 수 있습니다:
+
+![Next.js Logo](https://placehold.co/800x400/667eea/ffffff?text=Next.js+15)
+
+_Next.js 15 - 최신 React 프레임워크_
+
+![React 19](https://placehold.co/800x400/61dafb/000000?text=React+19)
+
+_React 19 - 새로운 기능들_
+
+<Callout type="info">
+  이미지는 Next.js의 Image 컴포넌트로 자동 최적화되어 성능이 향상됩니다!
+</Callout>
+
+## 8. 링크와 네비게이션
+
+### 외부 링크
+
+- [Next.js 공식 문서](https://nextjs.org/docs)
+- [React 공식 문서](https://react.dev)
+- [Velite 문서](https://velite.js.org)
+- [Prisma 문서](https://www.prisma.io/docs)
+- [TailwindCSS 문서](https://tailwindcss.com/docs)
+
+### 내부 링크
+
+블로그의 다른 포스트로 이동:
+
+- [Velite와 MDX로 만드는 현대적인 블로그](/posts/hello-world)
+- [Next.js 15의 새로운 기능들](/posts/nextjs-15-features)
+- [React Server Components 이해하기](/posts/react-server-components)
+
+## 9. 인라인 코드와 키보드
+
+텍스트 안에서 `const variable = "value"`처럼 코드를 강조할 수 있습니다.
+
+단축키를 표시할 때는:
+
+- <kbd>Cmd</kbd> + <kbd>K</kbd> - 명령 팔레트 열기
+- <kbd>Ctrl</kbd> + <kbd>S</kbd> - 저장
+- <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd> - 검색
+
+## 10. 복잡한 예시: Next.js API 라우트
+
+<Tabs defaultValue="route">
+  <TabsList>
+    <TabsTrigger value="route">API Route</TabsTrigger>
+    <TabsTrigger value="client">Client</TabsTrigger>
+    <TabsTrigger value="types">Types</TabsTrigger>
+  </TabsList>
+
+  <TabsContent value="route">
+    ### API Route Handler
+
+    ```typescript
+    // app/api/posts/route.ts
+    import { NextRequest, NextResponse } from "next/server";
+    import { prisma } from "@/lib/prisma";
+    import { PostSchema } from "@/types/post";
+
+    export async function GET(request: NextRequest) {
+      try {
+        const posts = await prisma.post.findMany({
+          where: { published: true },
+          orderBy: { createdAt: "desc" },
+          take: 10,
+        });
+
+        return NextResponse.json(posts);
+      } catch (error) {
+        return NextResponse.json(
+          { error: "Failed to fetch posts" },
+          { status: 500 }
+        );
+      }
+    }
+
+    export async function POST(request: NextRequest) {
+      try {
+        const body = await request.json();
+        const validated = PostSchema.parse(body);
+
+        const post = await prisma.post.create({
+          data: validated,
+        });
+
+        return NextResponse.json(post, { status: 201 });
+      } catch (error) {
+        return NextResponse.json(
+          { error: "Invalid request" },
+          { status: 400 }
+        );
+      }
+    }
+    ```
+
+  </TabsContent>
+
+  <TabsContent value="client">
+    ### Client Component
+
+    ```tsx
+    "use client";
+
+    import { useState, useEffect } from "react";
+    import { Post } from "@/types/post";
+
+    export function PostsList() {
+      const [posts, setPosts] = useState<Post[]>([]);
+      const [loading, setLoading] = useState(true);
+
+      useEffect(() => {
+        fetch("/api/posts")
+          .then((res) => res.json())
+          .then((data) => {
+            setPosts(data);
+            setLoading(false);
+          })
+          .catch((error) => {
+            console.error(error);
+            setLoading(false);
+          });
+      }, []);
+
+      if (loading) return <div>Loading...</div>;
+
+      return (
+        <div className="space-y-4">
+          {posts.map((post) => (
+            <article key={post.id} className="p-6 border rounded-lg">
+              <h2 className="text-2xl font-bold">{post.title}</h2>
+              <p className="text-muted-foreground">{post.description}</p>
+            </article>
+          ))}
+        </div>
+      );
+    }
+    ```
+
+  </TabsContent>
+
+  <TabsContent value="types">
+    ### Type Definitions
+
+    ```typescript
+    // types/post.ts
+    import { z } from "zod";
+
+    export const PostSchema = z.object({
+      id: z.string().optional(),
+      title: z.string().min(1).max(200),
+      description: z.string().max(500),
+      content: z.string().min(10),
+      published: z.boolean().default(false),
+      tags: z.array(z.string()).optional(),
+      createdAt: z.date().optional(),
+      updatedAt: z.date().optional(),
+    });
+
+    export type Post = z.infer<typeof PostSchema>;
+    ```
+
+  </TabsContent>
+</Tabs>
+
+<Callout type="success">
+  위 코드는 타입 안전성과 에러 핸들링을 모두 포함한 완전한 예시입니다!
+</Callout>
+
+## 11. 구조화된 데이터
+
+### 프로젝트 아키텍처
+
+```
+project/
+├── src/
+│   ├── app/
+│   │   ├── (auth)/
+│   │   │   ├── signin/
+│   │   │   └── signup/
+│   │   ├── api/
+│   │   │   └── posts/
+│   │   │       └── route.ts
+│   │   ├── posts/
+│   │   │   └── [slug]/
+│   │   │       └── page.tsx
+│   │   └── layout.tsx
+│   ├── components/
+│   │   ├── ui/
+│   │   ├── mdx/
+│   │   └── layout/
+│   ├── lib/
+│   │   ├── auth.ts
+│   │   ├── prisma.ts
+│   │   └── utils.ts
+│   └── hooks/
+├── prisma/
+│   └── schema.prisma
+├── content/
+│   └── posts/
+└── public/
+```
+
+## 12. 수학 표현식과 특수 문자
+
+특수 문자와 기호를 사용할 수 있습니다:
+
+- 화살표: → ← ↑ ↓ ↔ ⇒ ⇐
+- 체크: ✓ ✔ ✅ ✗ ✘ ❌
+- 기타: ⚠️ 💡 🔥 ⭐ 📝 🎯 🚀 💪
+
+## 13. 수평선과 구분자
+
+섹션을 구분할 때 사용:
+
+---
+
+위아래로 수평선이 그어집니다.
+
+---
+
+## 마무리
+
+<Tabs defaultValue="components">
+  <TabsList>
+    <TabsTrigger value="components">컴포넌트 목록</TabsTrigger>
+    <TabsTrigger value="usage">사용 시나리오</TabsTrigger>
+  </TabsList>
+
+  <TabsContent value="components">
+    ### 사용 가능한 컴포넌트
+
+    1. **Callout** - 5가지 타입 (info, warning, success, error, tip)
+    2. **Tabs** - 탭 기반 콘텐츠 구성
+    3. **Code Blocks** - 구문 강조가 있는 코드
+    4. **Tables** - 데이터 테이블
+    5. **Lists** - 순서 있는/없는 리스트
+    6. **Blockquotes** - 인용구
+    7. **Links** - 내부/외부 링크
+    8. **Images** - 최적화된 이미지
+    9. **Inline Code** - 인라인 코드 강조
+    10. **Keyboard** - 키보드 단축키 표시
+
+  </TabsContent>
+
+  <TabsContent value="usage">
+    ### 언제 사용하나요?
+
+    | 컴포넌트 | 시나리오 |
+    |---------|---------|
+    | Callout | 중요 정보 강조, 경고 메시지 |
+    | Tabs | 여러 옵션 비교, 다중 코드 예시 |
+    | Code Blocks | 코드 예시, 튜토리얼 |
+    | Tables | 데이터 비교, 사양 정보 |
+    | Lists | 단계별 설명, 기능 나열 |
+
+  </TabsContent>
+</Tabs>
+
+<Callout type="success" title="축하합니다!">
+  이제 모든 MDX 컴포넌트를 활용하여 풍부하고 인터랙티브한 블로그 포스트를 작성할
+  수 있습니다! 🎉
+</Callout>
+
+---
+
+<Callout type="info">
+  이 포스트가 도움이 되었다면, 다른 개발자들과 공유해주세요! 질문이나 피드백은
+  언제든 환영합니다.
+</Callout>
