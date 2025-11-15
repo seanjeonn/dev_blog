@@ -27,6 +27,22 @@ model User {
 }
 
 enum Role {
-  USER 
+  USER
   ADMIN
+}
+
+model PostStats {
+  id              String   @id @default(cuid())
+  slug            String   @unique
+  commentCount    Int      @default(0)
+  reactionCount   Int      @default(0)
+  discussionUrl   String?
+  reactionsData   Json?
+  lastSyncedAt    DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([slug])
+  @@index([lastSyncedAt])
+  @@map("post_stats")
 }

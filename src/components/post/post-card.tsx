@@ -1,3 +1,6 @@
+import { Suspense } from "react";
+
+import { PostStats } from "./post-stats";
 import {
   Card,
   CardContent,
@@ -74,6 +77,11 @@ export function PostCard({
                 {format(new Date(date), "PPP", { locale: ko })}
               </time>
             </div>
+
+            {/* Comment and reaction counts */}
+            <Suspense fallback={null}>
+              <PostStats slug={slug} />
+            </Suspense>
           </div>
         </CardContent>
 

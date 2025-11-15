@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/sync-comments?all=true",
+      "schedule": "0 */6 * * *"
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 import { posts, type Post } from ".velite";
+import { MonitoredComments } from "@/components/comments/monitored-comments";
 import { mdxComponents } from "@/components/mdx/mdx-components";
 import { MDXContent } from "@/components/mdx/mdx-content";
 import { PostHeader } from "@/components/post/post-header";
@@ -66,6 +67,9 @@ export default async function PostPage({ params }: PostPageProps) {
 
           {/* MDX Content */}
           <MDXContent code={post.body} components={mdxComponents} />
+
+          {/* Comments Section with Lazy Loading */}
+          <MonitoredComments slug={slug} title={post.title} />
         </article>
 
         {/* Sidebar - TOC */}

@@ -25,6 +25,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
+      <head>
+        {/* Preconnect to Giscus for faster comment loading */}
+        <link rel="preconnect" href="https://giscus.app" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://github.githubassets.com" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
