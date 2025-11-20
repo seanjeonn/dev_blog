@@ -2,7 +2,8 @@
   "crons": [
     {
       "path": "/api/sync-comments?all=true",
-      "schedule": "0 4 * * *"
+      "schedule": "0 4 * * *",
+      "method": "POST"
     }
   ]
 }
