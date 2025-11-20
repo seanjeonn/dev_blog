@@ -7,19 +7,21 @@ const GITHUB_REPO = process.env.NEXT_PUBLIC_GISCUS_REPO || "";
 const [GITHUB_OWNER, GITHUB_REPO_NAME] = GITHUB_REPO.split("/");
 
 /**
- * POST /api/sync-comments
+ * GET /api/sync-comments
  * Syncs comment counts from GitHub Discussions to Supabase
  *
  * Query params:
+ * - secret: (required) CRON_SECRET for authentication
  * - slug: (optional) sync specific post
  * - all: (optional) sync all published posts
  *
- * Requires CRON_SECRET in Authorization header for security
+ * Used by Vercel Cron (GET method only)
  */
-export async function POST(request: NextRequest) {
+export async function GET(request: NextRequest) {
   try {
-    // Verify cron secret for security
-    const authHeader = request.headers.get("authorization");
+    // Verify cron secret from query parameter
+    const searchParams = request.nextUrl.searchParams;
+    const providedSecret = searchParams.get("secret");
     const cronSecret = process.env.CRON_SECRET;
 
     if (!cronSecret) {
@@ -29,7 +31,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (authHeader !== `Bearer ${cronSecret}`) {
+    if (providedSecret !== cronSecret) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -40,7 +42,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const searchParams = request.nextUrl.searchParams;
     const slug = searchParams.get("slug");
     const syncAll = searchParams.get("all") === "true";
 
@@ -150,17 +151,4 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
-
-// GET endpoint for manual triggering via browser (dev only)
-export async function GET(request: NextRequest) {
-  if (process.env.NODE_ENV === "production") {
-    return NextResponse.json(
-      { error: "Use POST method in production" },
-      { status: 405 }
-    );
-  }
-
-  // Redirect to POST for dev convenience
-  return POST(request);
 }
