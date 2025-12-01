@@ -17,7 +17,7 @@ export const projects: Project[] = [
     title: "개발 블로그 & 포트폴리오",
     description:
       "Next.js 15, TypeScript, Tailwind CSS를 활용한 개인 개발 블로그입니다. Velite를 사용한 MDX 기반 콘텐츠 관리, Giscus 댓글 시스템, 그리고 다크 모드를 지원합니다.",
-    image: "/static/projects/dev-blog.png",
+    image: "/static/dev-blog.png",
     category: "Web",
     tags: ["Next.js", "TypeScript", "Tailwind CSS", "Velite", "MDX"],
     github: "https://github.com/junsu0573/dev_blog",
@@ -30,7 +30,7 @@ export const projects: Project[] = [
     title: "AI 기반 분류 할 일 관리 웹앱",
     description:
       "AI 기반 할 일 관리 앱으로, 사용자가 입력한 할 일을 자동으로 분류하고 정리해줍니다. 캘린더 뷰와 추가 기능을 통해 일정 관리를 지원합니다.",
-    image: "/static/projects/tidy-mind.png",
+    image: "/static/tidy-mind.png",
     category: "Web",
     tags: ["AI", "React.js", "Node.js", "MongoDB"],
     github: "https://github.com/ihj04982/tidy-mind-fe",
@@ -43,7 +43,7 @@ export const projects: Project[] = [
     title: "육류 이미지 데이터 수집 및 저장 시스템",
     description:
       "육류 데이터를 PDA 디바이스 내장 카메라 및 바코드를 활용하여 수집하고, 중앙 서버에 저장하는 어플리케이션입니다.",
-    image: "/static/projects/deep-plant.png",
+    image: "/static/deep-plant.png",
     category: "App",
     tags: ["Flutter", "Firebase", "Flask"],
     github: "https://github.com/Deep-Plant",
