@@ -26,8 +26,8 @@ export default function Home() {
               </div>
               <h3 className="text-xl font-semibold mb-2">MDX 기반 작성</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                마크다운과 React 컴포넌트를 결합하여 풍부한 콘텐츠를 작성할 수 있습니다.
-                코드 하이라이팅과 커스텀 컴포넌트를 자유롭게 활용하세요.
+                Velite MDX을 활용하여 유연하고 확장 가능한 블로그 포스트를
+                작성하였습니다. 다양한 컴포넌트와 상호작용을 구현하였습니다.
               </p>
             </div>
 
@@ -37,8 +37,8 @@ export default function Home() {
               </div>
               <h3 className="text-xl font-semibold mb-2">빠른 성능</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Next.js 15와 Turbopack으로 최적화된 빌드 속도와 뛰어난 사용자 경험을 제공합니다.
-                정적 생성으로 초고속 로딩을 보장합니다.
+                Next.js 15와 Turbopack으로 최적화된 빌드 속도와 뛰어난 사용자
+                경험을 제공합니다. 정적 생성으로 준수한 로딩을 보장합니다.
               </p>
             </div>
 
@@ -49,7 +49,6 @@ export default function Home() {
               <h3 className="text-xl font-semibold mb-2">타입 안전성</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 TypeScript와 Velite를 통해 완벽한 타입 안전성을 보장합니다.
-                개발 경험과 코드 품질을 동시에 향상시킵니다.
               </p>
             </div>
           </div>
