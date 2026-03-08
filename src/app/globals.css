@@ -204,12 +204,6 @@
     isolation: isolate;
   }
 
-  /* Hide list markers */
-  ul,
-  ol,
-  li {
-    list-style: none;
-  }
 }
 
 /* HERO SECTION ANIMATIONS */
