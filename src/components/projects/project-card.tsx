@@ -76,7 +76,7 @@ export function ProjectCard({ project, className }: ProjectCardProps) {
           </h3>
 
           {/* Description - Hidden by default, shown on hover */}
-          <p className="text-sm text-gray-200 line-clamp-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 max-h-0 group-hover:max-h-20 overflow-hidden">
+          <p className="text-sm text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity duration-300 max-h-0 group-hover:max-h-40 overflow-hidden">
             {project.description}
           </p>
 

@@ -13,6 +13,19 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    id: "chonggakhanwoo",
+    title: "한우 자사몰 웹사이트",
+    description:
+      "Next.js 15 기반 한우 자사몰 웹사이트입니다. 사용자 친화적인 UI와 빠른 성능을 제공하며, 효율적인 데이터 관리를 위해 Redis, Vercel CDN 캐싱을 활용했습니다. Toss Payments로 원활한 결제 경험을 제공하며, Prisma ORM과 AWS RDS를 사용하여 안정적인 데이터베이스 관리를 구현했습니다.",
+    image: "/static/chonggakhanwoo.png",
+    category: "Web",
+    tags: ["Next.js", "TypeScript", "Redis", "Prisma", "AWS"],
+    github: "",
+    demo: "https://chonggakhanwoo.co.kr",
+    featured: true,
+    date: "2025-02-01",
+  },
+  {
     id: "dev-blog",
     title: "개발 블로그 & 포트폴리오",
     description:
