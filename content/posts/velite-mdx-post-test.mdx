@@ -2,7 +2,7 @@
 title: "Velite MDX 기반 블로그 테스트"
 description: "Velite 기반 MDX을 활용한 Next.js 블로그 포스트입니다."
 date: 2025-12-01
-published: true
+published: false
 tags: ["Velite", "MDX", "Next.js"]
 category: "Next.js"
 toc: true
@@ -161,7 +161,7 @@ const fetchWithRetry = async (url, options = {}, retries = 3) => {
 
       // 지수 백오프
       await new Promise((resolve) =>
-        setTimeout(resolve, Math.pow(2, i) * 1000)
+        setTimeout(resolve, Math.pow(2, i) * 1000),
       );
     }
   }
@@ -323,7 +323,6 @@ Tabs를 사용하면 여러 옵션이나 코드 예시를 효율적으로 표시
 다양한 레벨의 리스트를 사용할 수 있습니다:
 
 - **프론트엔드 기술**
-
   - React 19
     - Server Components
     - Concurrent Features
@@ -348,20 +347,17 @@ Tabs를 사용하면 여러 옵션이나 코드 예시를 효율적으로 표시
 프로젝트 시작하기:
 
 1. **요구사항 분석**
-
    1. 기능 정의
    2. 기술 스택 선정
    3. 아키텍처 설계
 
 2. **개발 환경 설정**
-
    1. Git 저장소 생성
    2. 프로젝트 초기화
    3. 의존성 설치
    4. 환경 변수 설정
 
 3. **핵심 기능 개발**
-
    1. 데이터베이스 스키마 설계
    2. API 엔드포인트 구현
    3. UI 컴포넌트 개발
