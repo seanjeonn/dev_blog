@@ -175,7 +175,7 @@ macOS는 BSD 계열 유닉스를 기반으로 하지만, 계정 관리는 **Open
 
 <Callout type="tip" title="왜 /etc/shadow가 없을까?">
   macOS는 계정·그룹·비밀번호를 `/etc/passwd`·`/etc/shadow` 파일 조합 대신,
-  **디렉터리 서비스(Directory Services)**와 `opendirectoryd` 데몬이 관리하는
+  <strong>디렉터리 서비스(Directory Services)</strong>와 `opendirectoryd` 데몬이 관리하는
   디렉터리 DB(plist 파일) 형태로 저장합니다. CLI에서 `dscl` 명령으로 읽을 수
   있지만, 해시 자체는 보호되어 있고 평문 비밀번호는 어디에도 저장되지 않습니다.
 </Callout>
