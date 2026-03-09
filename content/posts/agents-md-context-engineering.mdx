@@ -1,0 +1,317 @@
+---
+title: "AGENTS.md 설계 전략: 6편의 연구가 말하는 AI 코딩 에이전트 컨텍스트 엔지니어링"
+description: "AI 코딩 에이전트의 컨텍스트 파일(AGENTS.md)은 프로젝트 설명 문서가 아니라 행동 제어 레이어로 설계해야 합니다. 최신 6편의 연구를 분석하여 최적의 AGENTS.md 설계 패턴과 컨텍스트 계층 분리 전략을 정리합니다."
+date: 2026-03-09
+published: true
+tags: ["AI Agent", "Context Engineering", "AGENTS.md", "LLM", "Coding Agent", "Developer Productivity"]
+category: "AI"
+toc: true
+---
+
+## 소개
+
+AI 코딩 에이전트를 사용해본 개발자라면 한 번쯤 이런 고민을 해봤을 것입니다.
+
+> "AGENTS.md(또는 CLAUDE.md)에 뭘 어떻게 써야 AI가 더 잘 동작할까?"
+
+직관적으로는 프로젝트에 대한 정보를 많이 제공할수록 AI가 더 똑똑하게 동작할 것 같지만, 최근 연구들은 **정반대의 결론**을 내리고 있습니다.
+
+이 글에서는 다음 내용을 다룹니다.
+
+- 컨텍스트가 AI 에이전트에게 전달되는 구조
+- AGENTS.md의 효과를 실험한 6편의 연구 비교 분석
+- 연구들이 공통으로 도출한 최적 설계 패턴
+- 실전에서 적용할 수 있는 AGENTS.md 작성 전략
+
+## 1. 컨텍스트란 무엇인가
+
+AI 코딩 에이전트에서 **컨텍스트**는 모델이 작업을 수행할 때 참조하는 모든 정보를 의미합니다. 이 컨텍스트는 다음과 같은 계층 구조로 구성됩니다.
+
+```text
+System Prompt  →  Memory Files  →  User Prompt / AI Output
+(최우선)          (중간 우선)        (일반 우선)
+```
+
+| 계층 | 설명 | 접근 권한 |
+| ---- | ---- | ---- |
+| System Prompt | 모델의 기본 행동 규칙을 정의하는 프롬프트 | 사용자 접근 불가 (최우선 적용) |
+| Memory Files | AGENTS.md, CLAUDE.md 등 repository-level context 파일 | User Prompt보다 높은 우선순위로 로드 |
+| User Prompt / AI Output | 사용자의 요청과 AI의 응답 | 일반 우선순위 |
+
+핵심은 **Memory Files가 User Prompt보다 높은 우선순위**로 컨텍스트에 포함된다는 점입니다. 즉, AGENTS.md에 작성한 규칙은 사용자의 개별 요청보다 우선적으로 적용됩니다.
+
+이런 구조 때문에 AGENTS.md를 어떻게 설계하느냐가 에이전트의 전체 행동에 큰 영향을 미칩니다.
+
+## 2. 6편의 연구 분석
+
+최근 AI 코딩 에이전트 관련 연구들을 종합하면, AGENTS.md 같은 repository-level context 파일은 **"많이 설명하는 문서"가 아니라 "최소한의 실행 규칙 파일"**로 설계해야 한다는 공통 패턴이 나타납니다.
+
+아래는 대표 6편의 연구를 비교군, 결과, 결론 기준으로 정리한 것입니다.
+
+### 2-1. AGENTS.md의 효율성 영향
+
+<Callout type="info" title="On the Impact of AGENTS.md Files on the Efficiency of AI Coding Agents (arXiv:2601.20404)">
+  GitHub repo 10개, PR 124개를 대상으로 AGENTS.md 유무에 따른 에이전트 성능을 비교한 실험입니다.
+</Callout>
+
+**비교군**: AGENTS.md 있음 vs 없음
+
+**결과**:
+- Runtime **-28.64%** 감소
+- Output tokens **-16.58%** 감소
+- Task completion은 거의 동일
+
+**결론**: AGENTS.md는 작업 성공률 자체는 바꾸지 않지만, **실행 효율을 크게 개선**할 수 있습니다.
+
+### 2-2. Context 파일의 실제 효과
+
+<Callout type="warning" title="Evaluating AGENTS.md: Are Repository-Level Context Files Helpful for Coding Agents? (arXiv:2602.11988)">
+  context 파일이 오히려 성능을 떨어뜨릴 수 있다는 결과를 보여준 중요한 연구입니다.
+</Callout>
+
+**비교군**: baseline (context 없음) / developer-written AGENTS.md / LLM-generated AGENTS.md
+
+**결과**:
+- Context 파일 사용 시 **success rate 감소**
+- Inference cost **+20% 이상** 증가
+- Agent가 더 많은 탐색과 테스트를 수행
+
+**결론**: context 파일은 **불필요한 요구사항을 만들어** 작업을 더 어렵게 만들 수 있으며, 최소 정보만 포함해야 합니다.
+
+### 2-3. Context 파일 대규모 분석
+
+<Callout type="info" title="Agent READMEs: An Empirical Study of Context Files for Agentic Coding (arXiv:2511.12884)">
+  1,925개 repository, 2,303개 context 파일을 대규모로 분석한 연구입니다.
+</Callout>
+
+**결과**: context 파일에 포함된 정보 분포를 분석했을 때, 설명 중심의 내용이 대부분이었습니다.
+
+| 내용 | 비율 |
+| ---- | ---- |
+| 구현 정보 | 69.9% |
+| 아키텍처 | 67.7% |
+| build/run command | 62.3% |
+| security | 14.5% |
+| performance | 14.5% |
+
+**결론**: 대부분의 context 파일은 **설명 중심 문서**이며, 실제 **운영 제약 조건은 부족**합니다.
+
+### 2-4. Context는 행동 제어 레이어
+
+**Context Engineering for AI Agents in OSS** 연구에서는 OSS repository의 context file을 대규모로 분석한 결과, context file이 agent 행동을 **강하게 유도**하며 repository-specific context가 workflow에 큰 영향을 미친다는 것을 발견했습니다.
+
+**결론**: context는 **knowledge가 아니라 agent behavior control layer**로 작동합니다.
+
+### 2-5. Agent 설정 도구로의 진화
+
+**Configuring Agentic AI Coding Tools: Exploratory Study**에서는 다양한 coding agent 설정을 비교 분석했습니다. Repository context file adoption이 증가하고 있으며, CLAUDE.md, AGENTS.md 같은 agent-specific config가 확산되고 있다는 결과를 보여줍니다.
+
+**결론**: context file은 **configuration artifact**로 진화하고 있습니다.
+
+### 2-6. 실행 가능한 규칙의 필요성
+
+<Callout type="tip" title="ContextCov: Executable Constraints from Agent Instruction Files">
+  instruction text만으로는 context drift가 발생하며, 실행 가능한 constraint 시스템이 필요하다는 것을 보여준 연구입니다.
+</Callout>
+
+**비교군**: instruction text vs executable constraint system
+
+**결과**: instruction만 있으면 **context drift 발생** (에이전트가 규칙을 점점 무시하는 현상)
+
+**결론**: AGENTS.md는 단순 문서보다 **실행 규칙으로 변환**되어야 합니다.
+
+## 3. 6편 연구 종합 비교
+
+| 연구 | 비교 기준 | 주요 결과 | 핵심 결론 |
+| ---- | ---- | ---- | ---- |
+| 2601.20404 | AGENTS.md 유무 | runtime, tokens 감소 | 효율 개선 |
+| 2602.11988 | baseline / dev / LLM | success rate 감소, cost 증가 | 최소 context 필요 |
+| Agent READMEs | 2,303개 context 분석 | 설명 중심 문서 | 운영 규칙 부족 |
+| Context Engineering | OSS 분석 | context가 행동 결정 | behavior control |
+| Agent Tool Config | tool adoption | context file 확산 | configuration artifact |
+| ContextCov | instruction vs executable | drift 발생 | executable constraint 필요 |
+
+두 핵심 실험(2601.20404, 2602.11988)의 결과를 조합하면 흥미로운 결론이 나옵니다.
+
+- AGENTS.md가 있으면 **효율은 좋아지지만**, 내용이 과하면 **성공률은 오히려 떨어진다**
+- 즉, **최소한의 핵심 규칙만** 담겨야 효율과 성공률 모두 챙길 수 있습니다
+
+## 4. 연구가 도출한 최적 설계 패턴
+
+6편의 연구가 공통으로 도출한 AGENTS.md 최적 설계 패턴은 5가지로 정리됩니다.
+
+### 4-1. 최소 context 원칙
+
+불필요한 설명을 제거합니다. 다음 내용은 AGENTS.md에 넣지 않는 것이 좋습니다.
+
+```text
+❌ architecture overview
+❌ tech stack 설명
+❌ repo structure 나열
+```
+
+<Callout type="warning" title="왜 제거해야 하는가">
+  AI 에이전트는 코드 탐색을 통해 아키텍처, 기술 스택, 디렉토리 구조, 의존성 관계를 스스로 파악할 수 있습니다. 이런 정보를 장황하게 기술하면 불필요한 탐색 증가, reasoning step 증가, token 사용 증가로 이어집니다.
+</Callout>
+
+### 4-2. 실행 규칙 중심
+
+설명 대신 구체적인 실행 명령을 넣습니다.
+
+```text
+✅ build command
+✅ test command
+✅ tool usage
+✅ deployment rule
+```
+
+### 4-3. 제약 조건 명시
+
+AI가 하지 말아야 할 것을 명확하게 지정합니다.
+
+```text
+✅ do not modify generated code
+✅ use prisma migrations
+✅ run tests before commit
+```
+
+### 4-4. 탐색 제한
+
+에이전트가 repo 전체를 탐색하지 않도록 작업 범위를 제한합니다.
+
+```text
+✅ primary directories
+✅ allowed files
+```
+
+### 4-5. Executable Guardrail
+
+텍스트 기반 규칙을 넘어, 실행 가능한 검증 메커니즘을 활용합니다.
+
+```text
+✅ lint rule
+✅ CI check
+✅ runtime validation
+```
+
+## 5. 왜 "행동 제어"에 집중해야 하는가
+
+### 5-1. AI는 이미 코드를 읽을 수 있다
+
+AI 코딩 에이전트는 다음 정보를 코드 탐색을 통해 스스로 파악할 수 있습니다.
+
+- `package.json`, `requirements.txt`에서 의존성 확인
+- import graph에서 아키텍처 파악
+- 폴더 구조에서 프로젝트 레이아웃 이해
+
+따라서 AGENTS.md에 이런 정보를 설명하는 것은 **에이전트의 탐색 비용만 증가**시킵니다.
+
+### 5-2. AI는 특정 유형의 실수를 반복한다
+
+실험 결과와 실제 에이전트 사용 경험을 보면, AI는 다음과 같은 실수를 반복하는 경향이 있습니다.
+
+- 테스트 실행을 누락
+- 잘못된 build command 사용
+- generated 파일 수정
+- migration 규칙 위반
+- API response 형식 불일치
+- 캐시 키 규칙 깨짐
+
+이런 **반복 오류 패턴을 직접 제어하는 규칙**이 가장 효과적인 AGENTS.md 내용입니다.
+
+```text
+Always run tests before finishing a task.
+Never modify generated Prisma client files.
+API routes must use standard response format.
+Redis cache keys must follow product namespace rule.
+```
+
+## 6. 컨텍스트 계층 분리 전략
+
+최근 에이전트 설계에서 중요한 패턴은 <strong>context 계층 분리(context layering)</strong>입니다. 모든 정보를 항상 로드하지 않고 필요에 따라 나누는 것입니다.
+
+### 항상 로드되는 정보: AGENTS.md
+
+실행 명령, 필수 도구, 금지 패턴, 반복 오류 방지 규칙만 포함합니다.
+
+```text
+package manager: pnpm
+run tests: pnpm test
+never edit generated files
+use prisma migrations only
+```
+
+### 필요할 때만 로드되는 정보: SKILL / Tool Context
+
+특정 기능 구현 가이드, 아키텍처 문서, 배포 방법, 성능 최적화 규칙, 보안 정책 등은 SKILL이나 tool 기반 context로 분리합니다.
+
+```text
+skill: database-migration
+skill: payment-integration
+skill: aws-deployment
+```
+
+이렇게 하면 **기본 context는 가볍게 유지**하면서 **필요한 정보만 동적으로 로드**할 수 있습니다.
+
+<Callout type="tip" title="실전 적용 예시">
+  Claude Code에서는 CLAUDE.md에 최소 규칙만 두고, `.claude/skills/` 디렉토리에 skill 파일을 분리하여 상황별 지식을 온디맨드로 로드하는 방식을 지원합니다.
+</Callout>
+
+## 7. 좋은 AGENTS.md의 특징
+
+연구 결과와 실제 에이전트 사용 패턴을 종합하면, 좋은 AGENTS.md는 다음 5가지 특징을 가집니다.
+
+### 7-1. 짧다
+
+대개 **20~50줄** 수준이 가장 적절합니다.
+
+### 7-2. 실행 중심이다
+
+설명 대신 행동 규칙이 들어갑니다.
+
+```text
+run tests
+use this command
+do not edit this folder
+```
+
+### 7-3. 제약 조건 중심이다
+
+AI 행동을 제한하는 규칙이 들어갑니다.
+
+```text
+Never modify generated code
+Always run lint before commit
+Use Prisma for all DB queries
+```
+
+### 7-4. 탐색 범위를 줄인다
+
+에이전트가 전체 repo를 분석하지 않도록 작업 범위를 명확히 제한합니다.
+
+```text
+Most application logic is inside /src.
+API routes are under /src/app/api.
+```
+
+### 7-5. 실행 가능한 검증이 있다
+
+텍스트 규칙만으로는 drift가 발생하므로, lint rule, CI check, pre-commit hook 등으로 규칙을 강제합니다.
+
+## 마무리
+
+6편의 연구를 종합한 AGENTS.md 설계의 핵심 원칙은 다음과 같습니다.
+
+> **AI가 이미 탐색할 수 있는 정보는 문서화하지 말고, AI가 반복적으로 실수하는 행동만 직접 제어하라.**
+
+그리고 컨텍스트를 다음과 같이 분리하는 것이 가장 효율적인 구조입니다.
+
+```text
+AGENTS.md = minimal behavioral constraints
+SKILLS     = on-demand domain knowledge
+```
+
+- **항상 필요한 규칙** → AGENTS.md (짧고 실행 중심)
+- **상황별 지식** → SKILL / Tool Context (필요할 때만 로드)
+
+이 방식이 최근 AI 코딩 에이전트 연구와 실제 도구 설계에서 공통적으로 나타나는 패턴입니다. AGENTS.md를 작성할 때 "이 내용이 AI의 반복 실수를 막아주는가?"를 기준으로 판단하면 자연스럽게 효과적인 context 파일을 만들 수 있을 것입니다.
