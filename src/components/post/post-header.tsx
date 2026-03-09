@@ -30,11 +30,11 @@ export function PostHeader({
       )}
 
       {/* Title */}
-      <h1 className="text-4xl md:text-5xl font-bold tracking-tight">{title}</h1>
+      <h1 className="text-3xl md:text-4xl font-bold tracking-tight">{title}</h1>
 
       {/* Description */}
       {description && (
-        <p className="text-xl text-muted-foreground">{description}</p>
+        <p className="text-lg text-muted-foreground">{description}</p>
       )}
 
       {/* Meta Information */}
