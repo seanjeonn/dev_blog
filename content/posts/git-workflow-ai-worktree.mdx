@@ -1,0 +1,420 @@
+---
+title: "AI 시대의 Git Workflow 전략: Gitflow부터 Worktree 병렬 개발까지"
+description: "AI 코딩 도구의 등장으로 코드 변경량과 실험 빈도가 급증하면서 Git 전략도 달라져야 합니다. Gitflow 브랜치 전략의 기본 구조부터 작은 PR 전략, Merge 전략, 그리고 Git Worktree를 활용한 병렬 개발 전략까지 실전 중심으로 정리합니다."
+date: 2026-03-12
+published: true
+tags: ["Git", "Gitflow", "Git Worktree", "AI", "DevOps", "Workflow"]
+category: "DevOps"
+toc: true
+---
+
+## 소개
+
+AI 코딩 도구의 등장으로 개발 속도는 크게 빨라졌습니다. 하지만 동시에 **코드 변경량 증가**, **실험 코드 증가**, **충돌 가능성 증가**라는 새로운 과제가 함께 발생하고 있습니다.
+
+이제 Git은 단순한 버전 관리 도구가 아니라, **변경 흐름을 통제하는 협업 시스템**으로 설계되어야 합니다.
+
+이 글에서 다루는 내용은 다음과 같습니다.
+
+- Gitflow 브랜치 전략의 기본 구조와 개발 흐름
+- AI 환경에서 Gitflow가 유용한 이유
+- 작은 PR 전략과 Merge 전략
+- CI 기반 자동 검증 파이프라인
+- **Git Worktree를 활용한 병렬 개발 전략**
+
+## 1. Gitflow 브랜치 전략 개요
+
+Gitflow는 Vincent Driessen이 제안한 Git 브랜치 전략으로, **배포 중심 프로젝트에서 안정적인 개발 흐름**을 만들기 위해 설계된 모델입니다.
+
+### 1-1. 기본 구조
+
+```text
+main
+ └─ develop
+      ├─ feature/*
+      ├─ release/*
+      └─ hotfix/*
+```
+
+### 1-2. 브랜치별 역할
+
+| 브랜치 | 역할 | 생성 기점 | 병합 대상 |
+| ---- | ---- | ---- | ---- |
+| `main` | 운영 환경 코드, 항상 배포 가능 상태 | - | - |
+| `develop` | 다음 릴리즈를 위한 통합 개발 브랜치 | `main` | - |
+| `feature/*` | 새로운 기능 개발 | `develop` | `develop` |
+| `release/*` | 배포 준비, QA 및 버그 수정 | `develop` | `main` + `develop` |
+| `hotfix/*` | 운영 환경 긴급 버그 수정 | `main` | `main` + `develop` |
+
+## 2. Gitflow 기본 개발 흐름
+
+Gitflow의 일반적인 개발 흐름은 다음 단계로 진행됩니다.
+
+### 2-1. 기능 개발
+
+`develop`에서 feature 브랜치를 생성하여 작업합니다.
+
+```text
+develop
+   │
+   ├─ feature/product-api
+   ├─ feature/product-search
+   └─ feature/cart
+```
+
+기능이 완성되면 `develop`으로 merge합니다.
+
+```bash
+# feature 브랜치 생성
+git checkout develop
+git checkout -b feature/product-api
+
+# 개발 완료 후 develop에 merge
+git checkout develop
+git merge feature/product-api
+```
+
+### 2-2. 릴리즈 준비
+
+`develop`에서 `release` 브랜치를 생성하여 QA를 진행합니다.
+
+```bash
+git checkout develop
+git checkout -b release/v1.3.0
+```
+
+### 2-3. 배포
+
+릴리즈가 완료되면 `main`과 `develop` 모두에 merge합니다.
+
+```bash
+git checkout main
+git merge release/v1.3.0
+git tag v1.3.0
+
+git checkout develop
+git merge release/v1.3.0
+```
+
+### 2-4. 긴급 버그 수정
+
+운영 환경에서 긴급 버그가 발생하면 `main`에서 직접 `hotfix` 브랜치를 생성합니다.
+
+```bash
+git checkout main
+git checkout -b hotfix/login-bug
+
+# 수정 후 main과 develop 모두에 merge
+git checkout main
+git merge hotfix/login-bug
+
+git checkout develop
+git merge hotfix/login-bug
+```
+
+이 구조는 **안정적인 릴리즈 관리**에 매우 강점이 있습니다.
+
+## 3. AI 환경에서 Gitflow가 유용한 이유
+
+AI 코딩 환경에서는 다음과 같은 특징이 있습니다.
+
+- **코드 생성 속도 증가**: AI는 짧은 시간에 많은 코드를 생성합니다
+- **실험 코드 증가**: 여러 해결 방법을 빠르게 시도합니다
+- **변경 범위 확대**: 한 작업에서 여러 파일이 동시에 수정됩니다
+
+Gitflow 구조는 이러한 상황에서 다음과 같은 장점을 제공합니다.
+
+| 장점 | 설명 |
+| ---- | ---- |
+| 운영 코드 안정성 확보 | `main`은 항상 배포 가능한 상태를 유지 |
+| 기능 개발과 릴리즈 분리 | `feature`와 `release`가 명확히 구분 |
+| 긴급 수정 대응 | `hotfix` 브랜치로 즉시 대응 가능 |
+
+<Callout type="info" title="요약">
+  Gitflow는 AI 환경에서도 안정적인 배포 흐름을 유지하는 데 유리합니다. 특히 코드 변경량이 많아질수록 브랜치 분리의 가치가 커집니다.
+</Callout>
+
+## 4. Feature 브랜치 운영 전략
+
+Gitflow에서 대부분의 작업은 `feature` 브랜치에서 진행됩니다.
+
+```text
+feature/product-cache
+feature/search-ranking
+feature/cart-discount
+```
+
+기본 흐름은 다음과 같습니다.
+
+```text
+develop
+   ↓ feature 브랜치 생성
+   ↓ 개발
+   ↓ Pull Request
+   ↓ develop merge
+```
+
+AI 환경에서는 특히 다음 원칙이 중요합니다.
+
+- **기능 단위로 브랜치 생성**: 하나의 브랜치에 여러 기능을 섞지 않습니다
+- **PR 크기 최소화**: AI가 생성한 코드도 작은 단위로 나눠서 리뷰합니다
+- **빠른 merge 주기 유지**: 오래 열려 있는 브랜치는 충돌 가능성을 높입니다
+
+## 5. 작은 Pull Request 전략
+
+AI는 한 번에 많은 코드를 생성하는 경향이 있습니다. 하지만 Git workflow에서는 **PR 크기를 작게 유지하는 것**이 중요합니다.
+
+### 5-1. 권장 기준
+
+| 항목 | 권장 기준 |
+| ---- | ---- |
+| 변경 파일 수 | 10개 이하 |
+| 코드 라인 수 | 300~400라인 이하 |
+
+### 5-2. PR이 커지면 발생하는 문제
+
+PR이 너무 커지면 다음과 같은 문제가 발생합니다.
+
+- **리뷰 품질 저하**: 변경이 많을수록 리뷰어가 집중하기 어렵습니다
+- **버그 발견 어려움**: 작은 버그가 큰 diff 속에 묻힐 수 있습니다
+- **merge conflict 증가**: 동시에 많은 파일을 변경하면 충돌 확률이 높아집니다
+
+<Callout type="tip" title="실전 팁">
+  AI에게 작업을 요청할 때도 "전체를 한 번에 구현해줘"보다 "먼저 API 엔드포인트만 만들어줘", "다음으로 테스트를 작성해줘"처럼 단계별로 나눠서 요청하면 자연스럽게 작은 PR을 만들 수 있습니다.
+</Callout>
+
+## 6. Merge 전략
+
+AI 환경에서는 히스토리를 깔끔하게 유지하는 merge 전략이 중요합니다.
+
+### 6-1. Squash Merge
+
+```text
+feature/product-cache (여러 커밋)
+   ↓ squash merge
+develop (하나의 커밋으로 합쳐짐)
+```
+
+```bash
+git checkout develop
+git merge --squash feature/product-cache
+git commit -m "feat: 상품 캐시 기능 추가"
+```
+
+**장점**:
+
+- 커밋 히스토리 정리
+- AI가 생성한 중간 실험 커밋 제거
+- 브랜치 히스토리 단순화
+
+### 6-2. Rebase
+
+`feature` 브랜치에서는 `develop`의 최신 상태를 유지하기 위해 rebase를 사용하는 것이 좋습니다.
+
+```bash
+git fetch origin
+git rebase origin/develop
+```
+
+<Callout type="warning" title="주의">
+  이미 push한 브랜치에서 rebase를 사용하면 force push가 필요합니다. 팀에서 공유 중인 브랜치에는 rebase를 사용하지 않는 것이 좋습니다.
+</Callout>
+
+## 7. CI 기반 Workflow
+
+AI 환경에서는 **자동 검증 파이프라인**이 필수입니다. AI가 생성한 코드가 기존 코드와 잘 동작하는지 기계적으로 검증해야 합니다.
+
+PR 단계에서 다음 검증이 순서대로 수행되어야 합니다.
+
+```text
+Pull Request
+   ↓ Lint
+   ↓ Type Check
+   ↓ Unit Test
+   ↓ Integration Test
+   ↓ Merge
+```
+
+<Callout type="error" title="필수 규칙">
+  테스트를 통과하지 못하면 merge되지 않도록 branch protection rule을 설정하는 것이 중요합니다. AI가 빠르게 코드를 생성하는 만큼, 자동화된 품질 게이트가 반드시 필요합니다.
+</Callout>
+
+## 8. Git Worktree란
+
+AI 환경에서는 여러 작업을 동시에 진행하는 경우가 매우 많습니다. 예를 들어 기능 개발 중에 긴급 버그 수정이 들어오거나, 성능 실험을 별도로 진행하거나, 코드 리뷰 대응을 해야 하는 상황이 빈번합니다.
+
+일반적인 Git 방식에서는 브랜치를 바꿀 때 `checkout`을 해야 합니다.
+
+```bash
+git checkout feature-A
+# 작업 중...
+git stash
+git checkout feature-B
+# 다른 작업...
+git checkout feature-A
+git stash pop
+```
+
+이 방식은 다음과 같은 문제가 있습니다.
+
+- **작업 context 변경**: stash/pop 과정에서 작업 흐름이 끊깁니다
+- **빌드 캐시 손실**: 브랜치를 바꿀 때마다 빌드 캐시가 무효화됩니다
+- **작업 상태 혼합**: stash를 잘못 적용하면 의도치 않은 변경이 섞일 수 있습니다
+
+이 문제를 해결하는 기능이 바로 **Git Worktree**입니다.
+
+<Callout type="info" title="Git Worktree">
+  Git Worktree는 하나의 repository에서 <strong>여러 working directory를 동시에 사용</strong>하는 기능입니다. 각 디렉토리가 서로 다른 브랜치를 바라보기 때문에 checkout 없이 브랜치 간 전환이 가능합니다.
+</Callout>
+
+## 9. Worktree 기본 사용법
+
+### 9-1. Worktree 생성
+
+```bash
+git worktree add ../repo-feature-search feature/search
+```
+
+이 명령을 실행하면 다음과 같은 디렉토리 구조가 만들어집니다.
+
+```text
+repo/                      ← 원본 (develop 브랜치)
+repo-feature-search/       ← worktree (feature/search 브랜치)
+```
+
+`repo-feature-search` 디렉토리에서 곧바로 `feature/search` 브랜치 작업을 시작할 수 있습니다. checkout도, stash도 필요 없습니다.
+
+### 9-2. 새 브랜치와 함께 생성
+
+기존 브랜치가 없는 경우 `-b` 옵션으로 새 브랜치를 만들면서 worktree를 생성할 수 있습니다.
+
+```bash
+git worktree add -b feature/cart ../repo-feature-cart develop
+```
+
+### 9-3. Worktree 목록 확인
+
+```bash
+git worktree list
+```
+
+```text
+/Users/dev/repo                     abc1234 [develop]
+/Users/dev/repo-feature-search      def5678 [feature/search]
+/Users/dev/repo-feature-cart         ghi9012 [feature/cart]
+```
+
+### 9-4. Worktree 삭제
+
+작업이 끝나면 worktree를 정리합니다.
+
+```bash
+git worktree remove ../repo-feature-search
+```
+
+## 10. Worktree 활용 시나리오
+
+### 10-1. 여러 기능 동시 개발
+
+```text
+repo-main/              ← main 브랜치
+repo-feature-product/   ← feature/product 브랜치
+repo-feature-search/    ← feature/search 브랜치
+repo-feature-cart/      ← feature/cart 브랜치
+```
+
+각 디렉토리에서 독립적으로 개발하고, 각각 별도의 에디터 창이나 터미널에서 작업할 수 있습니다.
+
+### 10-2. 긴급 버그 수정
+
+현재 feature 작업을 유지한 채 hotfix 작업이 가능합니다.
+
+```bash
+# 현재 feature/search 작업 중...
+# 긴급 버그 수정 필요!
+
+git worktree add ../repo-hotfix hotfix/login-bug
+
+# repo-hotfix에서 수정 → commit → push → PR
+# 수정 완료 후 정리
+
+git worktree remove ../repo-hotfix
+```
+
+기존 작업 디렉토리는 전혀 건드리지 않으므로 **작업 context가 완벽하게 보존**됩니다.
+
+### 10-3. 실험 코드 테스트
+
+성능 테스트나 AI 실험 코드도 별도 worktree에서 진행할 수 있습니다.
+
+```bash
+git worktree add -b experiment/cache-strategy ../repo-experiment develop
+```
+
+실험이 실패하더라도 원본 코드에 영향을 주지 않습니다.
+
+### 10-4. AI 에이전트와의 병렬 작업
+
+AI 코딩 에이전트가 별도의 worktree에서 작업하면 개발자의 작업과 충돌 없이 병렬로 진행할 수 있습니다.
+
+```text
+repo/                   ← 개발자가 직접 작업
+repo-ai-task/           ← AI 에이전트가 작업
+```
+
+<Callout type="tip" title="Claude Code의 Worktree 지원">
+  Claude Code는 자체적으로 Git Worktree를 지원합니다. Agent 실행 시 격리된 worktree에서 작업하여 메인 작업 디렉토리에 영향을 주지 않도록 할 수 있습니다.
+</Callout>
+
+## 11. Worktree의 핵심 장점
+
+### 11-1. 작업 context 유지
+
+브랜치를 변경할 필요가 없으므로 **stash, checkout, pop 같은 context switching이 완전히 사라집니다**. 각 디렉토리가 독립적인 작업 환경을 유지합니다.
+
+### 11-2. 빌드 캐시 유지
+
+각 worktree는 독립된 `node_modules`와 빌드 결과물을 가집니다. 브랜치를 바꿀 때마다 빌드 캐시가 무효화되는 문제가 없습니다.
+
+특히 다음 환경에서 효과가 큽니다.
+
+| 빌드 도구 | 캐시 보존 효과 |
+| ---- | ---- |
+| Next.js | `.next` 캐시 디렉토리 보존 |
+| Vite | HMR 상태 유지 |
+| Turborepo | 패키지별 빌드 캐시 보존 |
+| pnpm workspace | 의존성 캐시 보존 |
+
+### 11-3. 병렬 개발 가능
+
+여러 기능을 **물리적으로 분리된 디렉토리**에서 동시에 작업할 수 있습니다. 각 worktree에서 독립적으로 `dev server`를 실행하는 것도 가능합니다.
+
+```bash
+# 터미널 1: feature/search
+cd repo-feature-search && pnpm dev --port 3001
+
+# 터미널 2: feature/cart
+cd repo-feature-cart && pnpm dev --port 3002
+```
+
+<Callout type="warning" title="디스크 공간 참고">
+  각 worktree는 Git 데이터를 공유하지만 working directory 파일은 별도로 존재합니다. <code>node_modules</code>까지 포함하면 worktree당 수백 MB가 필요할 수 있으므로 사용이 끝난 worktree는 바로 정리하는 것이 좋습니다.
+</Callout>
+
+## 마무리
+
+AI 시대의 Git workflow는 **속도와 안정성의 균형**을 유지하는 구조가 되어야 합니다.
+
+**Gitflow**는 다음과 같은 장점을 제공합니다.
+
+- 명확한 릴리즈 관리
+- 안정적인 배포 흐름
+- 긴급 수정 대응 구조
+
+여기에 **Git Worktree**를 함께 활용하면 다음까지 얻을 수 있습니다.
+
+- 여러 작업 병렬 처리
+- 개발 context 유지
+- 빌드 캐시 보존으로 생산성 향상
+
+AI 환경에서는 코드 변경이 빈번하고 동시에 여러 작업을 처리해야 하는 상황이 많습니다. **Gitflow 기반 브랜치 전략 + Worktree 기반 병렬 개발 구조**를 함께 사용하는 것이 이러한 환경에 효과적인 Git workflow가 될 수 있습니다.
