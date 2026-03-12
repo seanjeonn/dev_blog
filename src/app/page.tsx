@@ -1,11 +1,15 @@
 import { HeroSection } from "@/components/home/hero-section";
+import { getPostsMetadata } from "@/lib/posts";
+import { projects } from "@/lib/projects";
 import { Code2, Zap, FileText } from "lucide-react";
 
 export default function Home() {
+  const { publishedPosts } = getPostsMetadata();
+
   return (
     <div className="space-y-0">
       {/* Hero Section */}
-      <HeroSection />
+      <HeroSection metrics={{ postCount: publishedPosts, projectCount: projects.length }} />
 
       {/* Features Section */}
       <section className="py-20 px-6">

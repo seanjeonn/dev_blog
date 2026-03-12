@@ -8,7 +8,12 @@ import { ArrowRight, BookOpen, Code2 } from "lucide-react";
 import Link from "next/link";
 import { FaGithub } from "react-icons/fa";
 
-export function HeroSection() {
+interface HeroMetrics {
+  postCount: number;
+  projectCount: number;
+}
+
+export function HeroSection({ metrics }: { metrics: HeroMetrics }) {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -120,28 +125,21 @@ export function HeroSection() {
 
           {/* 통계 또는 강조 정보 */}
           <div
-            className={`grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto pt-12 ${
+            className={`grid grid-cols-1 md:grid-cols-2 gap-8 max-w-xl mx-auto pt-12 ${
               isVisible ? "animate-fade-in-up animation-delay-300" : "opacity-0"
             }`}
           >
             <div className="p-6 rounded-2xl bg-card/50 backdrop-blur-sm border border-border/50 hover:border-primary/50 transition-all duration-300 hover:scale-105">
-              <div className="text-3xl font-bold text-primary">50+</div>
+              <div className="text-3xl font-bold text-primary">{metrics.postCount}</div>
               <div className="text-sm text-muted-foreground mt-1">
                 기술 포스트
               </div>
             </div>
 
             <div className="p-6 rounded-2xl bg-card/50 backdrop-blur-sm border border-border/50 hover:border-primary/50 transition-all duration-300 hover:scale-105">
-              <div className="text-3xl font-bold text-primary">10+</div>
+              <div className="text-3xl font-bold text-primary">{metrics.projectCount}</div>
               <div className="text-sm text-muted-foreground mt-1">
-                오픈소스 프로젝트
-              </div>
-            </div>
-
-            <div className="p-6 rounded-2xl bg-card/50 backdrop-blur-sm border border-border/50 hover:border-primary/50 transition-all duration-300 hover:scale-105">
-              <div className="text-3xl font-bold text-primary">1K+</div>
-              <div className="text-sm text-muted-foreground mt-1">
-                GitHub Stars
+                프로젝트
               </div>
             </div>
           </div>
