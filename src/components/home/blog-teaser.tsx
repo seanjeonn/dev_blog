@@ -1,9 +1,17 @@
 import { posts, type Post } from ".velite";
 import { PostCard } from "@/components/post/post-card";
+import type { Locale } from "@/lib/i18n/config";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
+import { localePath } from "@/lib/i18n/href";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
-export function BlogTeaser() {
+interface BlogTeaserProps {
+  locale: Locale;
+  dict: Dictionary;
+}
+
+export function BlogTeaser({ locale, dict }: BlogTeaserProps) {
   const latest = posts
     .filter((post: Post) => post.published)
     .sort(
@@ -19,17 +27,17 @@ export function BlogTeaser() {
       <div className="flex items-end justify-between gap-4">
         <div>
           <p className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
-            Writing
+            {dict.home.writing}
           </p>
           <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
-            From the blog
+            {dict.home.fromBlog}
           </h2>
         </div>
         <Link
-          href="/posts"
+          href={localePath(locale, "/posts")}
           className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
-          Read the blog
+          {dict.home.readBlog}
           <ArrowRight className="h-4 w-4" />
         </Link>
       </div>
@@ -44,6 +52,7 @@ export function BlogTeaser() {
             date={post.date}
             category={post.category}
             tags={post.tags}
+            locale={locale}
           />
         ))}
       </div>

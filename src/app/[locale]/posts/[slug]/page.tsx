@@ -3,28 +3,23 @@ import { mdxComponents } from "@/components/mdx/mdx-components";
 import { MDXContent } from "@/components/mdx/mdx-content";
 import { PostHeader } from "@/components/post/post-header";
 import { TableOfContents } from "@/components/post/table-of-contents";
+import { isLocale, type Locale } from "@/lib/i18n/config";
 import { notFound } from "next/navigation";
 
 interface PostPageProps {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string; slug: string }>;
 }
 
-// generateStaticParams로 모든 포스트 경로 미리 생성 (SSG)
-export async function generateStaticParams() {
-  return posts.map((post) => ({
-    slug: post.slug,
-  }));
+export function generateStaticParams() {
+  return posts.map((post) => ({ slug: post.slug }));
 }
 
-// 동적 메타데이터 생성
 export async function generateMetadata({ params }: PostPageProps) {
   const { slug } = await params;
   const post = posts.find((post: Post) => post.slug === slug);
 
   if (!post) {
-    return {
-      title: "포스트를 찾을 수 없습니다",
-    };
+    return { title: "Post not found" };
   }
 
   return {
@@ -33,7 +28,7 @@ export async function generateMetadata({ params }: PostPageProps) {
     openGraph: {
       title: post.title,
       description: post.description,
-      type: "article",
+      type: "article" as const,
       publishedTime: post.date,
       tags: post.tags,
     },
@@ -41,20 +36,17 @@ export async function generateMetadata({ params }: PostPageProps) {
 }
 
 export default async function PostPage({ params }: PostPageProps) {
-  const { slug } = await params;
+  const { locale, slug } = await params;
+  if (!isLocale(locale)) notFound();
 
-  // 해당 슬러그의 포스트 찾기
   const post = posts.find((post: Post) => post.slug === slug);
-
-  // 포스트가 없거나 발행되지 않은 경우 404
   if (!post || !post.published) {
     notFound();
   }
 
   return (
-    <div className="container max-w-5xl py-12 mx-auto">
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_250px] gap-12">
-        {/* Main Content */}
+    <div className="container mx-auto max-w-5xl py-12">
+      <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_250px]">
         <article className="max-w-none lg:mx-8">
           <PostHeader
             title={post.title}
@@ -62,13 +54,12 @@ export default async function PostPage({ params }: PostPageProps) {
             date={post.date}
             tags={post.tags}
             category={post.category}
+            locale={locale as Locale}
           />
 
-          {/* MDX Content */}
           <MDXContent code={post.body} components={mdxComponents} />
         </article>
 
-        {/* Sidebar - TOC */}
         {post.toc && (
           <aside className="hidden lg:block">
             <div className="sticky top-20">

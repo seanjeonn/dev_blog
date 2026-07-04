@@ -2,24 +2,27 @@
 
 import { useState } from "react";
 
-import type { Project } from "@/lib/projects";
+import type { Locale } from "@/lib/i18n/config";
+import { localePath } from "@/lib/i18n/href";
+import type { ResolvedProject } from "@/lib/projects";
 import { cn } from "@/lib/utils";
 import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 interface ProjectCardProps {
-  project: Project;
+  project: ResolvedProject;
+  locale: Locale;
   className?: string;
 }
 
-export function ProjectCard({ project, className }: ProjectCardProps) {
+export function ProjectCard({ project, locale, className }: ProjectCardProps) {
   const [imageError, setImageError] = useState(false);
   const headlineMetric = project.metrics?.[0];
 
   return (
     <Link
-      href={`/projects/${project.id}`}
+      href={localePath(locale, `/projects/${project.id}`)}
       className={cn(
         "group flex flex-col overflow-hidden rounded-xl border border-border/60 bg-card transition-colors hover:border-foreground/30",
         className

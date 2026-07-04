@@ -1,58 +1,14 @@
+import type { Dictionary } from "@/lib/i18n/dictionaries";
+
 interface TimelineEntry {
   title: string;
   org: string;
   period: string;
-  description?: string;
-  current?: boolean;
+  description: string;
+  current: boolean;
 }
 
-const experience: TimelineEntry[] = [
-  {
-    title: "Founding Engineer & Product Manager",
-    org: "Yureka (AI Education Startup)",
-    period: "Mar 2026 – Present",
-    description:
-      "Sole engineer behind a production AI education platform — agentic study planner, Google Drive knowledge agents, and the roadmap/pricing that landed the first paid school partnership.",
-    current: true,
-  },
-  {
-    title: "Solo Full-Stack Engineer",
-    org: "Chonggak Hanwoo (Independent)",
-    period: "Nov 2025 – Feb 2026",
-    description:
-      "Independently built and launched a D2C commerce business — storefront, payments, and a custom operations dashboard. ₩7.5M+ in first-month revenue.",
-  },
-  {
-    title: "Engineer",
-    org: "TidyMind (Side Project)",
-    period: "Jun 2025 – Aug 2025",
-    description:
-      "Built an AI task-prioritization platform with reliable, structured LLM output.",
-  },
-  {
-    title: "Mobile Application Developer",
-    org: "Deeplant Inc. (Industry-Academic Project)",
-    period: "Mar 2023 – Dec 2023",
-    description:
-      "Flutter field app for meat-image dataset collection on PDA hardware, wired to a Flask/Firebase/central-server pipeline over REST.",
-  },
-];
-
-const education: TimelineEntry[] = [
-  {
-    title: "B.S. in Computer Science & Engineering",
-    org: "Sungkyunkwan University",
-    period: "Mar 2022 – Present",
-    current: true,
-  },
-  {
-    title: "Startup Founder Accelerator",
-    org: "Outsome Founder Sprint, Batch 6",
-    period: "Apr 2026 – May 2026",
-  },
-];
-
-function Timeline({ entries }: { entries: TimelineEntry[] }) {
+function Timeline({ entries }: { entries: readonly TimelineEntry[] }) {
   return (
     <ul className="mt-6 space-y-6">
       {entries.map((entry) => (
@@ -82,17 +38,21 @@ function Timeline({ entries }: { entries: TimelineEntry[] }) {
   );
 }
 
-export function ExperienceSection() {
+export function ExperienceSection({ dict }: { dict: Dictionary }) {
   return (
     <section className="mx-auto max-w-5xl px-6 py-16">
       <div className="grid gap-12 md:grid-cols-2">
         <div>
-          <h2 className="text-2xl font-semibold tracking-tight">Experience</h2>
-          <Timeline entries={experience} />
+          <h2 className="text-2xl font-semibold tracking-tight">
+            {dict.about.experienceTitle}
+          </h2>
+          <Timeline entries={dict.about.experienceItems} />
         </div>
         <div>
-          <h2 className="text-2xl font-semibold tracking-tight">Education</h2>
-          <Timeline entries={education} />
+          <h2 className="text-2xl font-semibold tracking-tight">
+            {dict.about.educationTitle}
+          </h2>
+          <Timeline entries={dict.about.educationItems} />
         </div>
       </div>
     </section>

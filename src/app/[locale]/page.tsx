@@ -1,25 +1,35 @@
 import { BlogTeaser } from "@/components/home/blog-teaser";
 import { HeroSection } from "@/components/home/hero-section";
 import { SelectedWork } from "@/components/home/selected-work";
+import { isLocale } from "@/lib/i18n/config";
+import { getDictionary } from "@/lib/i18n/dictionaries";
 import { siteConfig } from "@/lib/site-config";
 import { ArrowRight } from "lucide-react";
+import { notFound } from "next/navigation";
 
-export default function Home() {
+interface HomeProps {
+  params: Promise<{ locale: string }>;
+}
+
+export default async function Home({ params }: HomeProps) {
+  const { locale } = await params;
+  if (!isLocale(locale)) notFound();
+  const dict = await getDictionary(locale);
+
   return (
     <div className="divide-y divide-border/60">
-      <HeroSection />
-      <SelectedWork />
-      <BlogTeaser />
+      <HeroSection locale={locale} dict={dict} />
+      <SelectedWork locale={locale} dict={dict} />
+      <BlogTeaser locale={locale} dict={dict} />
 
       {/* Contact band */}
       <section className="mx-auto w-full max-w-5xl px-6 py-20">
         <div className="flex flex-col items-start gap-4">
           <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-            Let&apos;s build something.
+            {dict.home.contactTitle}
           </h2>
           <p className="max-w-xl text-muted-foreground">
-            I&apos;m open to founding-engineer roles, product collaborations, and
-            interesting problems. The fastest way to reach me is email.
+            {dict.home.contactBody}
           </p>
           <a
             href={`mailto:${siteConfig.email}`}

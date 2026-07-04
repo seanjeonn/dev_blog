@@ -1,5 +1,8 @@
 import { ProjectCover } from "@/components/projects/project-cover";
-import type { Project } from "@/lib/projects";
+import type { Locale } from "@/lib/i18n/config";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
+import { localePath } from "@/lib/i18n/href";
+import type { ResolvedProject } from "@/lib/projects";
 import { ArrowLeft, ExternalLink, Github } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,15 +15,23 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function ProjectDetail({ project }: { project: Project }) {
+interface ProjectDetailProps {
+  project: ResolvedProject;
+  locale: Locale;
+  dict: Dictionary;
+}
+
+export function ProjectDetail({ project, locale, dict }: ProjectDetailProps) {
+  const t = dict.projectDetail;
+
   return (
     <article className="mx-auto max-w-3xl px-6 py-12">
       <Link
-        href="/projects"
+        href={localePath(locale, "/projects")}
         className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" />
-        All work
+        {t.allWork}
       </Link>
 
       {/* Header */}
@@ -76,7 +87,7 @@ export function ProjectDetail({ project }: { project: Project }) {
 
       {/* Problem */}
       <section className="mt-12">
-        <SectionHeading>The problem</SectionHeading>
+        <SectionHeading>{t.problem}</SectionHeading>
         <p className="mt-3 text-[15px] leading-relaxed text-foreground/90">
           {project.problem}
         </p>
@@ -84,7 +95,7 @@ export function ProjectDetail({ project }: { project: Project }) {
 
       {/* Goal */}
       <section className="mt-10">
-        <SectionHeading>Goal &amp; constraints</SectionHeading>
+        <SectionHeading>{t.goalConstraints}</SectionHeading>
         <p className="mt-3 text-[15px] leading-relaxed text-foreground/90">
           {project.goal}
         </p>
@@ -93,13 +104,10 @@ export function ProjectDetail({ project }: { project: Project }) {
       {/* Key decisions */}
       {project.decisions.length > 0 && (
         <section className="mt-10">
-          <SectionHeading>Key decisions</SectionHeading>
+          <SectionHeading>{t.keyDecisions}</SectionHeading>
           <ul className="mt-4 space-y-5">
             {project.decisions.map((d) => (
-              <li
-                key={d.decision}
-                className="border-l-2 border-border pl-4"
-              >
+              <li key={d.decision} className="border-l-2 border-border pl-4">
                 <p className="font-medium">{d.decision}</p>
                 <p className="mt-1.5 text-[15px] leading-relaxed text-muted-foreground">
                   {d.rationale}
@@ -113,7 +121,7 @@ export function ProjectDetail({ project }: { project: Project }) {
       {/* Process */}
       {project.process.length > 0 && (
         <section className="mt-10">
-          <SectionHeading>How I built it</SectionHeading>
+          <SectionHeading>{t.howIBuilt}</SectionHeading>
           <div className="mt-4 space-y-5">
             {project.process.map((step) => (
               <div key={step.heading}>
@@ -129,7 +137,7 @@ export function ProjectDetail({ project }: { project: Project }) {
 
       {/* Outcome */}
       <section className="mt-10">
-        <SectionHeading>Outcome</SectionHeading>
+        <SectionHeading>{t.outcome}</SectionHeading>
         <p className="mt-3 text-[15px] leading-relaxed text-foreground/90">
           {project.outcome}
         </p>
@@ -153,14 +161,17 @@ export function ProjectDetail({ project }: { project: Project }) {
       {/* Learnings */}
       {project.learnings && project.learnings.length > 0 && (
         <section className="mt-10">
-          <SectionHeading>What I took away</SectionHeading>
+          <SectionHeading>{t.learnings}</SectionHeading>
           <ul className="mt-3 space-y-2">
             {project.learnings.map((l) => (
               <li
                 key={l}
                 className="flex gap-2 text-[15px] leading-relaxed text-foreground/90"
               >
-                <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-foreground/40" />
+                <span
+                  aria-hidden
+                  className="mt-2 h-1 w-1 shrink-0 rounded-full bg-foreground/40"
+                />
                 {l}
               </li>
             ))}
@@ -170,14 +181,14 @@ export function ProjectDetail({ project }: { project: Project }) {
 
       {/* Tech stack */}
       <section className="mt-10 border-t border-border/60 pt-6">
-        <SectionHeading>Stack</SectionHeading>
+        <SectionHeading>{t.stack}</SectionHeading>
         <div className="mt-3 flex flex-wrap gap-2">
-          {project.techStack.map((t) => (
+          {project.techStack.map((tech) => (
             <span
-              key={t}
+              key={tech}
               className="rounded-md bg-secondary px-2.5 py-1 text-sm text-secondary-foreground"
             >
-              {t}
+              {tech}
             </span>
           ))}
         </div>
@@ -186,7 +197,7 @@ export function ProjectDetail({ project }: { project: Project }) {
       {/* Gallery */}
       {project.gallery && project.gallery.length > 0 && (
         <section className="mt-10">
-          <SectionHeading>Gallery</SectionHeading>
+          <SectionHeading>{t.gallery}</SectionHeading>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             {project.gallery.map((src) => (
               <div

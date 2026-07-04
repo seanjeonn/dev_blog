@@ -1,9 +1,10 @@
+import type { Dictionary } from "@/lib/i18n/dictionaries";
 import { siteConfig } from "@/lib/site-config";
 import { Download, Mail } from "lucide-react";
 import Image from "next/image";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 
-export function AboutHero() {
+export function AboutHero({ dict }: { dict: Dictionary }) {
   return (
     <section className="mx-auto max-w-5xl px-6 pt-20 sm:pt-24">
       <div className="grid items-center gap-10 md:grid-cols-[280px_1fr]">
@@ -22,26 +23,17 @@ export function AboutHero() {
         {/* Intro */}
         <div>
           <p className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
-            About
+            {dict.about.eyebrow}
           </p>
           <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
             {siteConfig.name}
           </h1>
-          <p className="mt-1 text-muted-foreground">{siteConfig.role}</p>
+          <p className="mt-1 text-muted-foreground">{dict.hero.role}</p>
 
           <div className="mt-5 space-y-4 leading-relaxed text-muted-foreground">
-            <p>
-              I&apos;m a founding engineer and product manager, and a Computer
-              Science student at Sungkyunkwan University. I like owning problems
-              end-to-end — from system design and LLM agents to deployment and
-              production operations.
-            </p>
-            <p>
-              As the sole engineer, I shipped an AI education platform for a
-              startup; independently, I built and launched a D2C commerce
-              business. Across both I care most about shipping software that
-              solves a real problem and that a small team can actually operate.
-            </p>
+            {dict.about.bio.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
           </div>
 
           <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -50,7 +42,7 @@ export function AboutHero() {
               className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
             >
               <Mail className="h-4 w-4" />
-              Email me
+              {dict.about.emailMe}
             </a>
             <a
               href={siteConfig.resumePath}
@@ -58,7 +50,7 @@ export function AboutHero() {
               className="inline-flex items-center gap-2 rounded-md border border-border px-4 py-2.5 text-sm font-medium transition-colors hover:bg-accent"
             >
               <Download className="h-4 w-4" />
-              Résumé
+              {dict.about.resume}
             </a>
             <div className="ml-1 flex items-center gap-1">
               <a

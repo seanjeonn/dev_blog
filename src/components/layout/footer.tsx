@@ -1,8 +1,15 @@
+import type { Locale } from "@/lib/i18n/config";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
 import { siteConfig } from "@/lib/site-config";
 import Link from "next/link";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 
-export function Footer() {
+interface FooterProps {
+  locale: Locale;
+  dict: Dictionary;
+}
+
+export function Footer({ dict }: FooterProps) {
   const year = new Date().getFullYear();
 
   return (
@@ -34,10 +41,10 @@ export function Footer() {
             href={`mailto:${siteConfig.email}`}
             className="transition-colors hover:text-foreground"
           >
-            Email
+            {dict.footer.email}
           </a>
           <Link href="/feed.xml" className="transition-colors hover:text-foreground">
-            RSS
+            {dict.footer.rss}
           </Link>
         </div>
       </div>

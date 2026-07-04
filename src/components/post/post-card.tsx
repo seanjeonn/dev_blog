@@ -1,5 +1,8 @@
+import type { Locale } from "@/lib/i18n/config";
+import { localePath } from "@/lib/i18n/href";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { ko } from "date-fns/locale";
 import Link from "next/link";
 
 interface PostCardProps {
@@ -9,6 +12,7 @@ interface PostCardProps {
   date: string;
   category?: string;
   tags?: string[];
+  locale: Locale;
   className?: string;
 }
 
@@ -19,11 +23,17 @@ export function PostCard({
   date,
   category,
   tags,
+  locale,
   className,
 }: PostCardProps) {
+  const formatted =
+    locale === "ko"
+      ? format(new Date(date), "yyyy년 M월 d일", { locale: ko })
+      : format(new Date(date), "MMM d, yyyy");
+
   return (
     <Link
-      href={`/posts/${slug}`}
+      href={localePath(locale, `/posts/${slug}`)}
       className={cn(
         "group flex h-full flex-col rounded-xl border border-border/60 bg-card p-5 transition-colors hover:border-foreground/30",
         className
@@ -34,7 +44,7 @@ export function PostCard({
           <span className="font-medium uppercase tracking-wide">{category}</span>
         )}
         <time dateTime={date} className="ml-auto">
-          {format(new Date(date), "MMM d, yyyy")}
+          {formatted}
         </time>
       </div>
 

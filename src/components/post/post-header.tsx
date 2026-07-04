@@ -1,5 +1,7 @@
 import { Separator } from "@/components/ui/separator";
+import type { Locale } from "@/lib/i18n/config";
 import { format } from "date-fns";
+import { ko } from "date-fns/locale";
 import { Calendar, Tag } from "lucide-react";
 
 interface PostHeaderProps {
@@ -8,6 +10,7 @@ interface PostHeaderProps {
   date: string;
   tags?: string[];
   category?: string;
+  locale: Locale;
 }
 
 export function PostHeader({
@@ -16,7 +19,13 @@ export function PostHeader({
   date,
   tags,
   category,
+  locale,
 }: PostHeaderProps) {
+  const formattedDate =
+    locale === "ko"
+      ? format(new Date(date), "yyyy년 M월 d일", { locale: ko })
+      : format(new Date(date), "MMMM d, yyyy");
+
   return (
     <div className="space-y-4 pb-8">
       {/* Category Badge */}
@@ -40,9 +49,7 @@ export function PostHeader({
       <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground pt-2">
         <div className="flex items-center gap-1.5">
           <Calendar className="h-4 w-4" />
-          <time dateTime={date}>
-            {format(new Date(date), "MMMM d, yyyy")}
-          </time>
+          <time dateTime={date}>{formattedDate}</time>
         </div>
       </div>
 

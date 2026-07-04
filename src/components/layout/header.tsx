@@ -1,5 +1,6 @@
 "use client";
 
+import { LocaleSwitcher } from "@/components/layout/locale-switcher";
 import {
   Sheet,
   SheetClose,
@@ -8,6 +9,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import type { Locale } from "@/lib/i18n/config";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
+import { localePath } from "@/lib/i18n/href";
 import { siteConfig } from "@/lib/site-config";
 import { cn } from "@/lib/utils";
 import { Menu } from "lucide-react";
@@ -16,19 +20,28 @@ import { usePathname } from "next/navigation";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 
 function isActive(pathname: string, href: string) {
-  if (href === "/") return pathname === "/";
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export function Header() {
-  const pathname = usePathname() ?? "/";
+interface HeaderProps {
+  locale: Locale;
+  dict: Dictionary;
+}
+
+export function Header({ locale, dict }: HeaderProps) {
+  const pathname = usePathname() ?? `/${locale}`;
+
+  const navItems = siteConfig.nav.map((item) => ({
+    label: dict.nav[item.key],
+    href: localePath(locale, item.href),
+  }));
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-6">
         {/* Wordmark */}
         <Link
-          href="/"
+          href={localePath(locale, "/")}
           className="text-base font-semibold tracking-tight transition-opacity hover:opacity-70"
         >
           {siteConfig.shortName}
@@ -36,7 +49,7 @@ export function Header() {
 
         {/* Desktop nav */}
         <nav className="hidden items-center gap-1 md:flex">
-          {siteConfig.nav.map((item) => (
+          {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -47,10 +60,11 @@ export function Header() {
                   : "text-muted-foreground"
               )}
             >
-              {item.title}
+              {item.label}
             </Link>
           ))}
           <span className="mx-2 h-4 w-px bg-border" aria-hidden />
+          <LocaleSwitcher locale={locale} />
           <a
             href={siteConfig.social.github}
             target="_blank"
@@ -73,69 +87,74 @@ export function Header() {
             href={`mailto:${siteConfig.email}`}
             className="ml-2 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
           >
-            Contact
+            {dict.nav.contact}
           </a>
         </nav>
 
         {/* Mobile nav */}
-        <Sheet>
-          <SheetTrigger
-            aria-label="Open menu"
-            className="rounded-md p-2 text-muted-foreground transition-colors hover:text-foreground md:hidden"
-          >
-            <Menu className="h-5 w-5" />
-          </SheetTrigger>
-          <SheetContent side="right" className="w-72">
-            <SheetHeader>
-              <SheetTitle className="text-left">{siteConfig.shortName}</SheetTitle>
-            </SheetHeader>
-            <nav className="flex flex-col gap-1 px-4">
-              {siteConfig.nav.map((item) => (
-                <SheetClose asChild key={item.href}>
-                  <Link
-                    href={item.href}
-                    className={cn(
-                      "rounded-md px-3 py-2.5 text-sm transition-colors hover:bg-accent",
-                      isActive(pathname, item.href)
-                        ? "font-medium text-foreground"
-                        : "text-muted-foreground"
-                    )}
+        <div className="flex items-center gap-2 md:hidden">
+          <LocaleSwitcher locale={locale} />
+          <Sheet>
+            <SheetTrigger
+              aria-label="Open menu"
+              className="rounded-md p-2 text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <Menu className="h-5 w-5" />
+            </SheetTrigger>
+            <SheetContent side="right" className="w-72">
+              <SheetHeader>
+                <SheetTitle className="text-left">
+                  {siteConfig.shortName}
+                </SheetTitle>
+              </SheetHeader>
+              <nav className="flex flex-col gap-1 px-4">
+                {navItems.map((item) => (
+                  <SheetClose asChild key={item.href}>
+                    <Link
+                      href={item.href}
+                      className={cn(
+                        "rounded-md px-3 py-2.5 text-sm transition-colors hover:bg-accent",
+                        isActive(pathname, item.href)
+                          ? "font-medium text-foreground"
+                          : "text-muted-foreground"
+                      )}
+                    >
+                      {item.label}
+                    </Link>
+                  </SheetClose>
+                ))}
+                <SheetClose asChild>
+                  <a
+                    href={`mailto:${siteConfig.email}`}
+                    className="mt-2 rounded-md bg-primary px-3 py-2.5 text-center text-sm font-medium text-primary-foreground"
                   >
-                    {item.title}
-                  </Link>
+                    {dict.nav.contact}
+                  </a>
                 </SheetClose>
-              ))}
-              <SheetClose asChild>
-                <a
-                  href={`mailto:${siteConfig.email}`}
-                  className="mt-2 rounded-md bg-primary px-3 py-2.5 text-center text-sm font-medium text-primary-foreground"
-                >
-                  Contact
-                </a>
-              </SheetClose>
-              <div className="mt-4 flex gap-2 px-3">
-                <a
-                  href={siteConfig.social.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="GitHub"
-                  className="text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  <FaGithub className="h-5 w-5" />
-                </a>
-                <a
-                  href={siteConfig.social.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="LinkedIn"
-                  className="text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  <FaLinkedin className="h-5 w-5" />
-                </a>
-              </div>
-            </nav>
-          </SheetContent>
-        </Sheet>
+                <div className="mt-4 flex gap-2 px-3">
+                  <a
+                    href={siteConfig.social.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="GitHub"
+                    className="text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    <FaGithub className="h-5 w-5" />
+                  </a>
+                  <a
+                    href={siteConfig.social.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="LinkedIn"
+                    className="text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    <FaLinkedin className="h-5 w-5" />
+                  </a>
+                </div>
+              </nav>
+            </SheetContent>
+          </Sheet>
+        </div>
       </div>
     </header>
   );
