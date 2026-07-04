@@ -11,7 +11,8 @@ export const siteConfig = {
   profileImage: "/profile.png",
   social: {
     github: "https://github.com/seanjeonn",
-    linkedin: "https://linkedin.com/in/sean-jeon",
+    linkedin:
+      "https://www.linkedin.com/in/sean-jeon-%EC%A0%84%EC%88%98%ED%98%84-6031513bb/",
   },
   // Nav labels come from the dictionary (nav.*); hrefs are prefixed with the
   // active locale at render time via localePath().
