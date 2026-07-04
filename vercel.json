@@ -1,8 +1,0 @@
-{
-  "crons": [
-    {
-      "path": "/api/sync-comments?secret=${CRON_SECRET}&all=true",
-      "schedule": "0 4 * * *"
-    }
-  ]
-}

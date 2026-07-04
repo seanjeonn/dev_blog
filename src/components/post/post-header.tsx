@@ -1,6 +1,5 @@
 import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
-import { ko } from "date-fns/locale";
 import { Calendar, Tag } from "lucide-react";
 
 interface PostHeaderProps {
@@ -42,7 +41,7 @@ export function PostHeader({
         <div className="flex items-center gap-1.5">
           <Calendar className="h-4 w-4" />
           <time dateTime={date}>
-            {format(new Date(date), "PPP", { locale: ko })}
+            {format(new Date(date), "MMMM d, yyyy")}
           </time>
         </div>
       </div>

@@ -1,9 +1,10 @@
 import { posts } from ".velite";
+import { siteConfig } from "@/lib/site-config";
 
 export async function GET() {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://example.com";
-  const siteTitle = "개발 블로그";
-  const siteDescription = "기술 블로그의 모든 포스트";
+  const siteUrl = siteConfig.siteUrl;
+  const siteTitle = `${siteConfig.shortName} — Blog`;
+  const siteDescription = "Notes on engineering, AI agents, and building products.";
 
   // 발행된 포스트만 가져오기
   const publishedPosts = posts
@@ -17,7 +18,7 @@ export async function GET() {
     <title>${escapeXml(siteTitle)}</title>
     <link>${siteUrl}</link>
     <description>${escapeXml(siteDescription)}</description>
-    <language>ko</language>
+    <language>en</language>
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
     <atom:link href="${siteUrl}/feed.xml" rel="self" type="application/rss+xml" />
     ${publishedPosts

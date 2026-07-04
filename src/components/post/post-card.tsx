@@ -1,16 +1,5 @@
-import { Suspense } from "react";
-
-import { PostStats } from "./post-stats";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { ko } from "date-fns/locale";
-import { Calendar, Tag } from "lucide-react";
 import Link from "next/link";
 
 interface PostCardProps {
@@ -33,74 +22,44 @@ export function PostCard({
   className,
 }: PostCardProps) {
   return (
-    <Link href={`/posts/${slug}`} className="block group">
-      <Card
-        className={cn(
-          "h-full overflow-hidden",
-
-          className
+    <Link
+      href={`/posts/${slug}`}
+      className={cn(
+        "group flex h-full flex-col rounded-xl border border-border/60 bg-card p-5 transition-colors hover:border-foreground/30",
+        className
+      )}
+    >
+      <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
+        {category && (
+          <span className="font-medium uppercase tracking-wide">{category}</span>
         )}
-      >
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-transparent pointer-events-none" />
+        <time dateTime={date} className="ml-auto">
+          {format(new Date(date), "MMM d, yyyy")}
+        </time>
+      </div>
 
-        {/* Shine effect on hover */}
-        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-          <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-        </div>
+      <h3 className="mt-3 text-lg font-semibold leading-snug transition-colors group-hover:text-foreground">
+        {title}
+      </h3>
 
-        <CardHeader className="relative z-10">
-          <div className="flex items-start justify-between gap-2">
-            <h3 className="text-xl font-semibold line-clamp-2 group-hover:text-primary transition-colors duration-300">
-              {title}
-            </h3>
+      {description && (
+        <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
+          {description}
+        </p>
+      )}
 
-            <span className="px-3 py-1 text-xs font-medium rounded-full bg-primary/20 backdrop-blur-sm text-primary border border-primary/30 whitespace-nowrap shadow-lg shadow-primary/20">
-              {category}
+      {tags && tags.length > 0 && (
+        <div className="mt-auto flex flex-wrap gap-1.5 pt-4">
+          {tags.slice(0, 4).map((tag) => (
+            <span
+              key={tag}
+              className="rounded-md bg-secondary px-2 py-0.5 text-xs text-secondary-foreground"
+            >
+              #{tag}
             </span>
-          </div>
-          {description && (
-            <p className="mt-3 text-sm text-muted-foreground/90 line-clamp-3 leading-relaxed">
-              {description}
-            </p>
-          )}
-        </CardHeader>
-
-        <CardContent className="relative z-10">
-          <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground/80">
-            <div className="flex items-center gap-1.5 group/date">
-              <Calendar className="h-4 w-4 group-hover/date:text-primary transition-colors" />
-              <time
-                dateTime={date}
-                className="group-hover/date:text-foreground transition-colors"
-              >
-                {format(new Date(date), "PPP", { locale: ko })}
-              </time>
-            </div>
-
-            {/* Comment and reaction counts */}
-            <Suspense fallback={null}>
-              <PostStats slug={slug} />
-            </Suspense>
-          </div>
-        </CardContent>
-
-        {tags && tags.length > 0 && (
-          <CardFooter className="relative z-10">
-            <div className="flex items-center gap-2 flex-wrap">
-              <Tag className="h-4 w-4 text-muted-foreground/60" />
-              {tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="px-2.5 py-1 text-xs rounded-lg bg-muted/50 backdrop-blur-sm text-muted-foreground border border-border/50 hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all duration-200"
-                >
-                  #{tag}
-                </span>
-              ))}
-            </div>
-          </CardFooter>
-        )}
-      </Card>
+          ))}
+        </div>
+      )}
     </Link>
   );
 }

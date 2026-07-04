@@ -5,22 +5,18 @@ import { SkillsSection } from "@/components/about/skills-section";
 
 export const metadata = {
   title: "About",
-  description: "개발자 소개 및 경력 정보",
+  description:
+    "Founding engineer and product manager building production AI products end-to-end.",
 };
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <AboutHero />
-
-      {/* Skills Section */}
+    <div className="divide-y divide-border/60">
+      <div className="pb-8">
+        <AboutHero />
+      </div>
       <SkillsSection />
-
-      {/* Experience Section */}
       <ExperienceSection />
-
-      {/* Contact Section */}
       <ContactSection />
     </div>
   );

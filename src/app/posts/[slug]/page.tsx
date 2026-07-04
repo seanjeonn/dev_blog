@@ -1,5 +1,4 @@
 import { posts, type Post } from ".velite";
-import { MonitoredComments } from "@/components/comments/monitored-comments";
 import { mdxComponents } from "@/components/mdx/mdx-components";
 import { MDXContent } from "@/components/mdx/mdx-content";
 import { PostHeader } from "@/components/post/post-header";
@@ -56,7 +55,7 @@ export default async function PostPage({ params }: PostPageProps) {
     <div className="container max-w-5xl py-12 mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_250px] gap-12">
         {/* Main Content */}
-        <article className="prose prose-gray dark:prose-invert max-w-none mx-8">
+        <article className="max-w-none lg:mx-8">
           <PostHeader
             title={post.title}
             description={post.description}
@@ -67,9 +66,6 @@ export default async function PostPage({ params }: PostPageProps) {
 
           {/* MDX Content */}
           <MDXContent code={post.body} components={mdxComponents} />
-
-          {/* Comments Section with Lazy Loading */}
-          <MonitoredComments slug={slug} title={post.title} />
         </article>
 
         {/* Sidebar - TOC */}

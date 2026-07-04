@@ -1,21 +1,37 @@
 import LayoutShell from "@/components/layout/layout-shell";
+import { siteConfig } from "@/lib/site-config";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const pretendard = localFont({
+  src: "../../public/fonts/PretendardVariable.woff2",
+  variable: "--font-sans",
+  weight: "100 900",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Dev Blog - 워크스페이스",
-  description: "인터랙티브 개발 환경",
+  metadataBase: new URL(siteConfig.siteUrl),
+  title: {
+    default: siteConfig.title,
+    template: "%s — Sean Jeon",
+  },
+  description: siteConfig.description,
+  authors: [{ name: siteConfig.name, url: siteConfig.social.github }],
+  creator: siteConfig.name,
+  openGraph: {
+    type: "website",
+    siteName: siteConfig.shortName,
+    url: siteConfig.siteUrl,
+    title: siteConfig.title,
+    description: siteConfig.description,
+  },
+  alternates: {
+    types: {
+      "application/rss+xml": "/feed.xml",
+    },
+  },
 };
 
 export default function RootLayout({
@@ -24,15 +40,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
-      <head>
-        {/* Preconnect to Giscus for faster comment loading */}
-        <link rel="preconnect" href="https://giscus.app" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://github.githubassets.com" />
-      </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html lang="en">
+      <body className={`${pretendard.variable} antialiased`}>
         <LayoutShell>{children}</LayoutShell>
       </body>
     </html>
