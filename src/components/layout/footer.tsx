@@ -1,26 +1,51 @@
-import { Separator } from "@/components/ui/separator";
+import type { Locale } from "@/lib/i18n/config";
+import type { Dictionary } from "@/lib/i18n/dictionaries";
+import { siteConfig } from "@/lib/site-config";
+import Link from "next/link";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
 
-export function Footer() {
+interface FooterProps {
+  locale: Locale;
+  dict: Dictionary;
+}
+
+export function Footer({ dict }: FooterProps) {
+  const year = new Date().getFullYear();
+
   return (
-    <footer className="mt-auto border-t flex justify-center px-4">
-      <div className="container py-6">
-        <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-          <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Dev Blog. All rights reserved.
-          </p>
-          <div className="flex gap-4 text-sm text-muted-foreground">
-            <a href="#" className="hover:text-foreground">
-              개인정보처리방침
-            </a>
-            <Separator orientation="vertical" className="h-4" />
-            <a href="#" className="hover:text-foreground">
-              이용약관
-            </a>
-            <Separator orientation="vertical" className="h-4" />
-            <a href="#" className="hover:text-foreground">
-              문의하기
-            </a>
-          </div>
+    <footer className="mt-auto border-t border-border/60">
+      <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-4 px-6 py-8 sm:flex-row">
+        <p className="text-sm text-muted-foreground">
+          © {year} {siteConfig.name}
+        </p>
+        <div className="flex items-center gap-5 text-sm text-muted-foreground">
+          <a
+            href={siteConfig.social.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub"
+            className="transition-colors hover:text-foreground"
+          >
+            <FaGithub className="h-[18px] w-[18px]" />
+          </a>
+          <a
+            href={siteConfig.social.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="LinkedIn"
+            className="transition-colors hover:text-foreground"
+          >
+            <FaLinkedin className="h-[18px] w-[18px]" />
+          </a>
+          <a
+            href={`mailto:${siteConfig.email}`}
+            className="transition-colors hover:text-foreground"
+          >
+            {dict.footer.email}
+          </a>
+          <Link href="/feed.xml" className="transition-colors hover:text-foreground">
+            {dict.footer.rss}
+          </Link>
         </div>
       </div>
     </footer>

@@ -1,0 +1,110 @@
+[   98217ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3125/feed.xml?_rsc=f2yo4:0
+[   98217ms] [ERROR] Failed to fetch RSC payload for http://localhost:3125/feed.xml. Falling back to browser navigation. TypeError: Failed to fetch
+    at y (http://localhost:3125/_next/static/chunks/ed69d423d09e33ee.js:1:48495)
+    at h (http://localhost:3125/_next/static/chunks/ed69d423d09e33ee.js:1:47365)
+    at http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:16049
+    at Object.a [as task] (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:13128)
+    at c.f (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:13833)
+    at c.enqueue (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:13258)
+    at f (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:16012)
+    at i (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:15528)
+    at u (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:17747)
+    at Object.prefetch (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:63675) @ http://localhost:3125/_next/static/chunks/ed69d423d09e33ee.js:0
+[  123208ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3125/ko?_rsc=2m6tw:0
+[  123208ms] [ERROR] Failed to fetch RSC payload for http://localhost:3125/ko. Falling back to browser navigation. TypeError: Failed to fetch
+    at y (http://localhost:3125/_next/static/chunks/ed69d423d09e33ee.js:1:48495)
+    at h (http://localhost:3125/_next/static/chunks/ed69d423d09e33ee.js:1:47365)
+    at http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:16049
+    at Object.a [as task] (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:13128)
+    at c.f (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:13833)
+    at c.enqueue (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:13258)
+    at f (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:16012)
+    at i (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:15528)
+    at u (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:17747)
+    at Object.prefetch (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:63675) @ http://localhost:3125/_next/static/chunks/ed69d423d09e33ee.js:0
+[  123208ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3125/favicon.ico?favicon.47c287e8.ico:0
+[  123208ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3125/ko/projects?_rsc=2m6tw:0
+[  123208ms] [ERROR] Failed to fetch RSC payload for http://localhost:3125/ko/projects. Falling back to browser navigation. TypeError: Failed to fetch
+    at y (http://localhost:3125/_next/static/chunks/ed69d423d09e33ee.js:1:48495)
+    at h (http://localhost:3125/_next/static/chunks/ed69d423d09e33ee.js:1:47365)
+    at http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:16049
+    at Object.a [as task] (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:13128)
+    at c.f (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:13833)
+    at c.enqueue (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:13258)
+    at f (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:16012)
+    at i (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:15528)
+    at u (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:17747)
+    at Object.prefetch (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:63675) @ http://localhost:3125/_next/static/chunks/ed69d423d09e33ee.js:0
+[  123208ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3125/ko/posts?_rsc=2m6tw:0
+[  123208ms] [ERROR] Failed to fetch RSC payload for http://localhost:3125/ko/posts. Falling back to browser navigation. TypeError: Failed to fetch
+    at y (http://localhost:3125/_next/static/chunks/ed69d423d09e33ee.js:1:48495)
+    at h (http://localhost:3125/_next/static/chunks/ed69d423d09e33ee.js:1:47365)
+    at http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:16049
+    at Object.a [as task] (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:13128)
+    at c.f (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:13833)
+    at c.enqueue (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:13258)
+    at f (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:16012)
+    at i (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:15528)
+    at u (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:17747)
+    at Object.prefetch (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:63675) @ http://localhost:3125/_next/static/chunks/ed69d423d09e33ee.js:0
+[  124336ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3125/feed.xml?_rsc=2m6tw:0
+[  124336ms] [ERROR] Failed to fetch RSC payload for http://localhost:3125/feed.xml. Falling back to browser navigation. TypeError: Failed to fetch
+    at y (http://localhost:3125/_next/static/chunks/ed69d423d09e33ee.js:1:48495)
+    at h (http://localhost:3125/_next/static/chunks/ed69d423d09e33ee.js:1:47365)
+    at http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:16049
+    at Object.a [as task] (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:13128)
+    at c.f (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:13833)
+    at c.enqueue (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:13258)
+    at f (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:16012)
+    at i (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:15528)
+    at u (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:17747)
+    at Object.prefetch (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:63675) @ http://localhost:3125/_next/static/chunks/ed69d423d09e33ee.js:0
+[  316554ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3125/ko?_rsc=2m6tw:0
+[  316554ms] [ERROR] Failed to fetch RSC payload for http://localhost:3125/ko. Falling back to browser navigation. TypeError: Failed to fetch
+    at y (http://localhost:3125/_next/static/chunks/ed69d423d09e33ee.js:1:48495)
+    at h (http://localhost:3125/_next/static/chunks/ed69d423d09e33ee.js:1:47365)
+    at http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:16049
+    at Object.a [as task] (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:13128)
+    at c.f (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:13833)
+    at c.enqueue (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:13258)
+    at f (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:16012)
+    at i (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:15528)
+    at u (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:17747)
+    at Object.prefetch (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:63675) @ http://localhost:3125/_next/static/chunks/ed69d423d09e33ee.js:0
+[  316554ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3125/favicon.ico?favicon.47c287e8.ico:0
+[  316555ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3125/ko/projects?_rsc=2m6tw:0
+[  316555ms] [ERROR] Failed to fetch RSC payload for http://localhost:3125/ko/projects. Falling back to browser navigation. TypeError: Failed to fetch
+    at y (http://localhost:3125/_next/static/chunks/ed69d423d09e33ee.js:1:48495)
+    at h (http://localhost:3125/_next/static/chunks/ed69d423d09e33ee.js:1:47365)
+    at http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:16049
+    at Object.a [as task] (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:13128)
+    at c.f (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:13833)
+    at c.enqueue (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:13258)
+    at f (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:16012)
+    at i (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:15528)
+    at u (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:17747)
+    at Object.prefetch (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:63675) @ http://localhost:3125/_next/static/chunks/ed69d423d09e33ee.js:0
+[  316555ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3125/ko/posts?_rsc=2m6tw:0
+[  316555ms] [ERROR] Failed to fetch RSC payload for http://localhost:3125/ko/posts. Falling back to browser navigation. TypeError: Failed to fetch
+    at y (http://localhost:3125/_next/static/chunks/ed69d423d09e33ee.js:1:48495)
+    at h (http://localhost:3125/_next/static/chunks/ed69d423d09e33ee.js:1:47365)
+    at http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:16049
+    at Object.a [as task] (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:13128)
+    at c.f (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:13833)
+    at c.enqueue (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:13258)
+    at f (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:16012)
+    at i (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:15528)
+    at u (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:17747)
+    at Object.prefetch (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:63675) @ http://localhost:3125/_next/static/chunks/ed69d423d09e33ee.js:0
+[  349314ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:3125/feed.xml?_rsc=2m6tw:0
+[  349314ms] [ERROR] Failed to fetch RSC payload for http://localhost:3125/feed.xml. Falling back to browser navigation. TypeError: Failed to fetch
+    at y (http://localhost:3125/_next/static/chunks/ed69d423d09e33ee.js:1:48495)
+    at h (http://localhost:3125/_next/static/chunks/ed69d423d09e33ee.js:1:47365)
+    at http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:16049
+    at Object.a [as task] (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:13128)
+    at c.f (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:13833)
+    at c.enqueue (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:13258)
+    at f (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:16012)
+    at i (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:15528)
+    at u (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:17747)
+    at Object.prefetch (http://localhost:3125/_next/static/chunks/edb609a8776b0ee9.js:1:63675) @ http://localhost:3125/_next/static/chunks/ed69d423d09e33ee.js:0
