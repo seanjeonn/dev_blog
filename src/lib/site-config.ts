@@ -7,7 +7,6 @@ export const siteConfig = {
   shortName: "Sean Jeon",
   email: "sean.suhyunjeon@gmail.com",
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "https://seanjeon.dev",
-  resumePath: "/resume.pdf",
   profileImage: "/profile.png",
   social: {
     github: "https://github.com/seanjeonn",

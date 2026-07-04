@@ -54,7 +54,6 @@ const en = {
       "As the sole engineer, I shipped an AI education platform for a startup; independently, I built and launched a D2C commerce business. Across both I care most about shipping software that solves a real problem and that a small team can actually operate.",
     ],
     emailMe: "Email me",
-    resume: "Résumé",
     skillsTitle: "Skills",
     skillGroups: [
       { label: "Languages", items: ["JavaScript / TypeScript", "Python", "Dart", "C"] },

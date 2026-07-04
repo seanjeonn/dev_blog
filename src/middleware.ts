@@ -47,6 +47,6 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   // Skip Next internals, API, the RSS feed, and any file with an extension
-  // (fonts, images, resume.pdf, favicon) so they are never locale-redirected.
+  // (fonts, images, PDFs, favicon) so they are never locale-redirected.
   matcher: ["/((?!_next|api|feed\\.xml|.*\\.).*)"],
 };

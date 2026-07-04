@@ -1,6 +1,6 @@
 import type { Dictionary } from "@/lib/i18n/dictionaries";
 import { siteConfig } from "@/lib/site-config";
-import { Download, Mail } from "lucide-react";
+import { Mail } from "lucide-react";
 import Image from "next/image";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 
@@ -43,14 +43,6 @@ export function AboutHero({ dict }: { dict: Dictionary }) {
             >
               <Mail className="h-4 w-4" />
               {dict.about.emailMe}
-            </a>
-            <a
-              href={siteConfig.resumePath}
-              download
-              className="inline-flex items-center gap-2 rounded-md border border-border px-4 py-2.5 text-sm font-medium transition-colors hover:bg-accent"
-            >
-              <Download className="h-4 w-4" />
-              {dict.about.resume}
             </a>
             <div className="ml-1 flex items-center gap-1">
               <a

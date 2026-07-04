@@ -56,7 +56,6 @@ const ko: Dictionary = {
       "스타트업의 단독 엔지니어로 AI 교육 플랫폼을 출시했고, 개인적으로는 D2C 커머스 사업을 직접 만들어 런칭했습니다. 두 경험 모두에서 가장 중요하게 생각한 것은, 진짜 문제를 해결하면서 작은 팀이 실제로 운영할 수 있는 소프트웨어를 만드는 것이었습니다.",
     ],
     emailMe: "이메일 보내기",
-    resume: "이력서",
     skillsTitle: "기술",
     skillGroups: [
       { label: "언어", items: ["JavaScript / TypeScript", "Python", "Dart", "C"] },
